@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<link rel="stylesheet" href="/assets/admin.css">
+</head>
+<body>
+<%- include('partials/nav') %>
+<div class="admin-wrap">
+  <h1><%= title %></h1>
+  <p class="admin-sub"><a href="/admin/<%= table %>">← Назад до списку</a></p>
+
+  <div class="admin-card">
+    <% if (table === 'fundraisers' && !item.id) { %>
+      <div class="autofetch-box">
+        <label>Встав посилання на збір — заповнимо картку автоматично</label>
+        <div class="autofetch-row">
+          <input type="text" id="autofetchUrl" placeholder="https://www.siepomaga.pl/...">
+          <button type="button" class="btn btn-ghost" id="autofetchBtn">Заповнити автоматично</button>
+        </div>
+        <p class="autofetch-status" id="autofetchStatus"></p>
+      </div>
+    <% } %>
+
+    <form method="POST" action="<%= item.id ? `/admin/${table}/${item.id}/edit` : `/admin/${table}/new` %>" id="itemForm">
+      <% fields.forEach(f => { %>
+        <div class="form-row">
+          <label><%= f.label %></label>
+          <% if (f.type === 'textarea') { %>
+            <textarea name="<%= f.name %>"><%= item[f.name] || '' %></textarea>
+          <% } else { %>
+            <input type="text" name="<%= f.name %>" value="<%= item[f.name] || '' %>">
+          <% } %>
+        </div>
+      <% }) %>
+      <button class="btn btn-primary" type="submit">Зберегти</button>
+      <a class="btn btn-ghost" href="/admin/<%= table %>">Скасувати</a>
+    </form>
+  </div>
+</div>
+
+<% if (table === 'fundraisers' && !item.id) { %>
+<script>
+  document.getElementById('autofetchBtn').addEventListener('click', async () => {
+    const urlInput = document.getElementById('autofetchUrl');
+    const status = document.getElementById('autofetchStatus');
+    const url = urlInput.value.trim();
+
+    if (!url) {
+      status.textContent = 'Спочатку встав посилання.';
+      status.className = 'autofetch-status error';
+      return;
+    }
+
+    status.textContent = 'Завантажуємо дані зі сторінки…';
+    status.className = 'autofetch-status';
+
+    try {
+      const res = await fetch('/admin/fundraisers/fetch-preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        status.textContent = data.error || 'Не вдалося отримати дані.';
+        status.className = 'autofetch-status error';
+        return;
+      }
+
+      const form = document.getElementById('itemForm');
+      form.querySelector('[name="url"]').value = url;
+      if (data.title) form.querySelector('[name="title"]').value = data.title;
+      if (data.description) form.querySelector('[name="description"]').value = data.description;
+      if (data.image) form.querySelector('[name="image_url"]').value = data.image;
+      if (data.platform) form.querySelector('[name="platform"]').value = data.platform;
+
+      status.textContent = 'Готово — перевір поля нижче і збережи.';
+      status.className = 'autofetch-status success';
+    } catch (err) {
+      status.textContent = 'Помилка запиту: ' + err.message;
+      status.className = 'autofetch-status error';
+    }
+  });
+</script>
+<% } %>
+
+</body>
+</html>

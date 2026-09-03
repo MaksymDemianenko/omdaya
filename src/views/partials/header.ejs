@@ -1,0 +1,28 @@
+<%
+const navItems = [
+  ['/', 'Головна'],
+  ['/about', 'Про нас'],
+  ['/programs', 'Напрями роботи'],
+  ['/get-help', 'Отримати допомогу'],
+  ['/transparency', 'Звітність'],
+  ['/contacts', 'Контакти'],
+];
+%>
+<header>
+  <div class="header-inner">
+    <a href="/" class="brand">
+      <img src="/assets/logo.png" alt="<%= settings.org_name %>">
+      <span class="brand-name"><%= settings.org_name %><small>Благодійна організація</small></span>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <% navItems.forEach(([href, label]) => { %>
+        <a href="<%= href %>" class="<%= currentPath === href ? 'active' : '' %>"><%= label %></a>
+      <% }) %>
+    </nav>
+    <div class="header-actions">
+      <div class="lang-toggle"><span class="active">UA</span><span>EN</span></div>
+      <a href="/donate" class="btn btn-primary btn-sm">Підтримати</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Меню"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>

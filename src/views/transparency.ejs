@@ -1,0 +1,143 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <%- include('partials/page-hero', {
+    eyebrow: 'Прозорість',
+    pageTitle: 'Довіра потребує правди',
+    lead: 'Ми відкрито показуватимемо не лише добрі наміри, а й шлях кожної допомоги: потребу, отримані кошти, витрати, результат і те, чого ми навчилися.'
+  }) %>
+
+  <section style="padding-top:0;">
+    <div class="wrap">
+      <p style="font-family:'Fraunces',serif; font-style:italic; font-size:19px; color:var(--magenta); max-width:70ch; margin-bottom:30px;">Для нас прозорість — це форма поваги до кожної людини, яка передає нам частину своєї довіри.</p>
+      <div class="values-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="value-card"><h4>Документи фонду</h4><p>Реєстраційні та юридичні відомості доступні без запиту.</p></div>
+        <div class="value-card"><h4>Звіти про проєкти</h4><p>Скільки отримано, на що витрачено і що стало можливим.</p></div>
+        <div class="value-card"><h4>Чесні обмеження</h4><p>Ми не приховуємо того, що ще не вдалося або перебуває в розвитку.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pillars">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Реєстрація фонду</span>
+        <h2>OM DAYA зареєстрована у Польщі</h2>
+        <p>Основну інформацію можна прочитати на сайті або перевірити в державному реєстрі KRS.</p>
+      </div>
+      <div class="donate-card" style="max-width:100%; margin-top:30px;">
+        <h3 style="font-size:20px;"><%= settings.org_legal_name %></h3>
+        <a href="https://wyszukiwarka-krs.ms.gov.pl/" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:18px;">Перевірити у KRS</a>
+        <div class="impact-grid" style="grid-template-columns:repeat(4,1fr); margin-top:28px;">
+          <div>
+            <div class="eyebrow">KRS</div>
+            <p style="font-family:'Fraunces',serif; font-size:18px; margin-top:6px;"><%= settings.org_krs %></p>
+          </div>
+          <div>
+            <div class="eyebrow">NIP</div>
+            <p style="font-family:'Fraunces',serif; font-size:18px; margin-top:6px;"><%= settings.org_nip %></p>
+          </div>
+          <div>
+            <div class="eyebrow">REGON</div>
+            <p style="font-family:'Fraunces',serif; font-size:18px; margin-top:6px;"><%= settings.org_regon %></p>
+          </div>
+          <div>
+            <div class="eyebrow">Місцезнаходження</div>
+            <p style="font-family:'Fraunces',serif; font-size:18px; margin-top:6px;"><%= settings.org_address %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Фінансова звітність</span>
+        <h2>2026 — перший фінансовий рік</h2>
+        <p>Перший річний фінансовий звіт OM DAYA буде опублікований після завершення фінансового року та підготовки обов'язкової звітності.</p>
+      </div>
+      <div class="donate-card" style="max-width:100%;">
+        <div class="impact-grid" style="grid-template-columns:repeat(4,1fr);">
+          <div><div class="eyebrow">Період</div><p style="margin-top:6px; color:var(--ink-soft);">Дата початку й завершення</p></div>
+          <div><div class="eyebrow">Отримано</div><p style="margin-top:6px; color:var(--ink-soft);">Підтверджена сума</p></div>
+          <div><div class="eyebrow">Витрачено</div><p style="margin-top:6px; color:var(--ink-soft);">Сума та призначення</p></div>
+          <div><div class="eyebrow">Результат</div><p style="margin-top:6px; color:var(--ink-soft);">Що вдалося зробити</p></div>
+        </div>
+      </div>
+      <p style="margin-top:14px; color:var(--ink-faint); font-size:13px;">Це шаблон оформлення, а не вигаданий проєкт чи фінансовий звіт.</p>
+    </div>
+  </section>
+
+  <section class="stories-section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Звіти про проєкти</span>
+        <h2>Від потреби — до результату</h2>
+        <p>Після завершення кожної допомоги тут з'являтиметься окремий зрозумілий звіт.</p>
+      </div>
+      <div class="story-card">
+        <div class="story-media"><span class="ph-label">місце для реального фото завершеного проєкту</span></div>
+        <div class="story-content">
+          <span class="eyebrow">Приклад структури звіту</span>
+          <h3>Назва завершеного проєкту</h3>
+          <p>Коротко й без використання історії дитини: яка була потреба, що зробила OM DAYA та який результат став можливим.</p>
+        </div>
+      </div>
+      <div style="background:var(--lavender); border-radius:var(--radius); padding:22px; margin-top:20px;">
+        <p style="color:var(--ink-soft);">OM DAYA лише починає свій шлях. Перші звіти з'являться після завершення та документального закриття відповідних проєктів.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-section">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">Як ми працюємо з внесками</span>
+        <h2>Кожна сума має свій шлях і своє пояснення</h2>
+      </div>
+      <div class="values-grid" style="grid-template-columns:repeat(2,1fr); margin-top:30px;">
+        <div class="value-card" style="background:rgba(255,255,255,0.06); box-shadow:none;">
+          <p style="color:#fff;">Обліковуємо кожне надходження.</p>
+        </div>
+        <div class="value-card" style="background:rgba(255,255,255,0.06); box-shadow:none;">
+          <p style="color:#fff;">Використовуємо кошти за призначенням.</p>
+        </div>
+        <div class="value-card" style="background:rgba(255,255,255,0.06); box-shadow:none;">
+          <p style="color:#fff;">Пояснюємо зміну мети збору.</p>
+        </div>
+        <div class="value-card" style="background:rgba(255,255,255,0.06); box-shadow:none;">
+          <p style="color:#fff;">Не приховуємо адміністративних витрат.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:44px;">
+    <div class="wrap">
+      <div class="donate-card" style="max-width:100%;">
+        <h3 style="font-size:19px;">У річному огляді покажемо</h3>
+        <ul style="margin:16px 0 0; padding-left:20px; color:var(--ink-soft); font-size:15px; line-height:2;">
+          <li>загальну суму надходжень;</li>
+          <li>витрати за напрямами допомоги;</li>
+          <li>адміністративні витрати;</li>
+          <li>залишок коштів на кінець року;</li>
+          <li>річний фінансовий документ.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="cta-band">
+        <h2>Маєте питання про прозорість фонду?</h2>
+        <p>Якщо ви підтримали OM DAYA і хочете уточнити, як використано ваш внесок — напишіть нам.</p>
+        <a href="/contacts" class="btn btn-ghost">Поставити запитання</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<link rel="stylesheet" href="/assets/admin.css">
+</head>
+<body>
+<%- include('partials/nav') %>
+<div class="admin-wrap">
+  <h1>Огляд</h1>
+  <p class="admin-sub">Керуйте вмістом сайту OM DAYA — тексти, історії, FAQ, команда та суми пожертв.</p>
+
+  <div class="admin-grid">
+    <a class="admin-stat" href="/admin/stories"><div class="num"><%= counts.stories %></div><div class="label">Історій</div></a>
+    <a class="admin-stat" href="/admin/programs"><div class="num"><%= counts.programs %></div><div class="label">Напрямів роботи</div></a>
+    <a class="admin-stat" href="/admin/impact"><div class="num"><%= counts.impact %></div><div class="label">Сум пожертв</div></a>
+    <a class="admin-stat" href="/admin/fundraisers"><div class="num"><%= counts.fundraisers %></div><div class="label">Зборів (посилань)</div></a>
+    <a class="admin-stat" href="/admin/faq"><div class="num"><%= counts.faq %></div><div class="label">Питань FAQ</div></a>
+    <a class="admin-stat" href="/admin/team"><div class="num"><%= counts.team %></div><div class="label">Учасників команди</div></a>
+    <a class="admin-stat" href="/admin/messages"><div class="num"><%= counts.messages %></div><div class="label">Повідомлень з форми</div></a>
+    <a class="admin-stat" href="/admin/newsletter"><div class="num"><%= counts.newsletter %></div><div class="label">Підписників розсилки</div></a>
+  </div>
+
+  <div class="admin-card">
+    <strong>Із чого почати:</strong>
+    <p style="color:var(--a-ink-soft); margin-top:8px; font-size:14px;">
+      1. Заповніть «Налаштування» — юр. дані, контакти, тексти головного екрану.<br>
+      2. Додайте реальні «Історії» та фото.<br>
+      3. Перевірте суми пожертв і напрями роботи.
+    </p>
+  </div>
+</div>
+</body>
+</html>

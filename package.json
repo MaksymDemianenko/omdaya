@@ -1,0 +1,26 @@
+{
+  "name": "omdaya-app",
+  "version": "1.0.0",
+  "description": "Сайт благодійної організації OM DAYA з адмін-панеллю для редагування контенту",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "backup": "node scripts/backup-db.js",
+    "set-admin-password": "node scripts/set-admin-password.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "nodemailer": "^9.0.3"
+  }
+}

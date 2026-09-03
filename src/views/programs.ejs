@@ -1,0 +1,105 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <%- include('partials/page-hero', {
+    eyebrow: 'Як ми допомагаємо',
+    pageTitle: 'Поруч із дитиною на шляху до безпечного майбутнього',
+    lead: 'OM DAYA підтримує українських дітей і родини, які переживають складні життєві обставини. Ми поєднуємо практичну допомогу з поступовим розвитком програм, що відкривають перед дитиною інший формат життя.'
+  }) %>
+
+  <section style="padding-top:20px;">
+    <div class="wrap">
+      <% const bgs = ['linear-gradient(135deg,#F6F0F9,#EFE2F4)','linear-gradient(135deg,#EEF8FA,#E4F2F5)','linear-gradient(135deg,#FDF2E9,#FBE7D6)','linear-gradient(135deg,#FFF8E4,#FCEFC7)']; %>
+      <% const eyebrows = ['01 · До виходу', '02 · Головний пріоритет', '03 · Досвід дитинства', '04 · Підтримка родини']; %>
+      <% programs.forEach((p, idx) => { %>
+        <div class="program-detail">
+          <div class="program-media" style="background:<%= bgs[idx % bgs.length] %>;">
+            <% if (p.icon) { %><span style="font-size:48px;"><%= p.icon %></span><% } else { %><span class="ph-label">фото / ілюстрація</span><% } %>
+          </div>
+          <div>
+            <span class="eyebrow"><%= eyebrows[idx] || ('Напрям 0' + (idx + 1)) %></span>
+            <h3><%= p.title %></h3>
+            <p><%= p.description %></p>
+            <% if (idx === 1) { %>
+              <span class="placeholder-tag" style="border-color:var(--teal); color:var(--teal); margin-left:0; margin-top:14px; display:inline-block;">ОСНОВНИЙ НАПРЯМ</span>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="pillars">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Що означає адаптація</span>
+        <h2>Не один проєкт, а шлях до внутрішньої опори</h2>
+        <p>Допомога добирається індивідуально — відповідно до ситуації, потреб людини, можливостей фонду та законодавства країни перебування.</p>
+      </div>
+      <div class="values-grid">
+        <div class="value-card"><h4>Внутрішня опора</h4><p>Психологічна підтримка, емоції та відновлення довіри.</p></div>
+        <div class="value-card"><h4>Безпечні стосунки</h4><p>Особисті кордони, розпізнавання насильства й уміння просити про допомогу.</p></div>
+        <div class="value-card"><h4>Самостійність</h4><p>Побут, документи, транспорт, бюджет і щоденні рішення.</p></div>
+        <div class="value-card"><h4>Освіта і праця</h4><p>Навчання, профорієнтація, наставництво та підготовка до роботи.</p></div>
+        <div class="value-card"><h4>Дім і оточення</h4><p>Безпечні умови життя та формування кола підтримки.</p></div>
+        <div class="value-card"><h4>Досвід дитинства</h4><p>Відпочинок, творчість, дружба, поїздки й теплі спогади.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Допомога сьогодні</span>
+        <h2>Починаємо з того, що необхідно дитині зараз</h2>
+        <p>Кожну потребу розглядаємо окремо та допомагаємо в межах можливостей фонду, залучаючи партнерів і небайдужих людей.</p>
+      </div>
+      <div class="program-detail" style="grid-template-columns:1fr; gap:20px; padding-top:10px;">
+        <div class="values-grid" style="grid-template-columns:repeat(4,1fr);">
+          <div class="value-card"><span class="eyebrow">01</span><h4 style="margin-top:10px;">Умови життя</h4><p>Допомагаємо оновлювати простори, у яких живуть і навчаються діти, та створювати більш безпечні й комфортні умови.</p></div>
+          <div class="value-card"><span class="eyebrow">02</span><h4 style="margin-top:10px;">Підтримка здоров'я</h4><p>Долучаємося до вирішення окремих питань здоров'я, коли фонд має можливість надати необхідну допомогу.</p></div>
+          <div class="value-card"><span class="eyebrow">03</span><h4 style="margin-top:10px;">Необхідні речі</h4><p>Передаємо дітям і закладам те, чого вони потребують у повсякденному житті.</p></div>
+          <div class="value-card"><span class="eyebrow">04</span><h4 style="margin-top:10px;">Моменти радості</h4><p>Створюємо невеликі події, які дарують дітям увагу, теплі емоції та добрі спогади.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pillars">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Крок у майбутнє</span>
+        <h2>Напрями, які ми розвиваємо</h2>
+        <p>Ці програми перебувають у процесі створення. Про запуск, умови та можливість участі ми будемо повідомляти окремо.</p>
+      </div>
+      <div class="pillars-grid" style="grid-template-columns:repeat(2,1fr);">
+        <div class="pillar-card">
+          <div class="pillar-icon">🩺</div>
+          <h3>Допомога у питаннях здоров'я</h3>
+          <p>Програма долучення фонду до окремих питань здоров'я дітей, коли є можливість надати необхідну підтримку.</p>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-icon">🎁</div>
+          <h3>Необхідні речі та моменти радості</h3>
+          <p>Регулярна програма передачі необхідних речей та організації подій, які дарують дітям увагу і теплі спогади.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="donate-section">
+    <div class="wrap">
+      <div class="cta-band" style="background:var(--surface); box-shadow:var(--shadow);">
+        <h2 style="color:var(--ink);">Хочете отримати допомогу або підтримати один із напрямів?</h2>
+        <p style="color:var(--ink-soft);">Розкажіть нам про свою ситуацію, або підтримайте фонд фінансово.</p>
+        <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:22px;">
+          <a href="/get-help" class="btn btn-primary">Отримати допомогу</a>
+          <a href="/donate" class="btn btn-ghost">Підтримати</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

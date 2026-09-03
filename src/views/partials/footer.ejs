@@ -1,0 +1,46 @@
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="/assets/logo.png" alt="<%= settings.org_name %>">
+        <p><%= settings.org_name %> · Підтримуємо українських дітей і родини</p>
+        <div class="social-row">
+          <% if (settings.social_facebook) { %><a href="<%= settings.social_facebook %>" target="_blank" rel="noopener" title="Facebook">FB</a><% } %>
+          <% if (settings.social_instagram) { %><a href="<%= settings.social_instagram %>" target="_blank" rel="noopener" title="Instagram">IG</a><% } %>
+          <% if (settings.social_whatsapp) { %><a href="<%= settings.social_whatsapp %>" target="_blank" rel="noopener" title="WhatsApp">WA</a><% } %>
+          <% if (settings.social_viber) { %><a href="<%= settings.social_viber %>" target="_blank" rel="noopener" title="Viber">Vb</a><% } %>
+          <% if (settings.social_youtube) { %><a href="<%= settings.social_youtube %>" target="_blank" rel="noopener" title="YouTube">YT</a><% } %>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Про нас</h4>
+        <a href="/about">Про нас</a>
+        <a href="/programs">Напрями роботи</a>
+        <a href="/get-help">Отримати допомогу</a>
+        <a href="/transparency">Звітність</a>
+      </div>
+      <div class="footer-col">
+        <h4>Контакти</h4>
+        <p><%= settings.contact_address %></p>
+        <p><%= settings.contact_email %></p>
+        <p><%= settings.contact_phone %></p>
+        <a href="/stories">Реальні справи</a>
+        <a href="/faq">Часті запитання</a>
+      </div>
+      <div class="footer-col">
+        <h4><%= settings.org_legal_name %></h4>
+        <p>KRS · NIP · REGON</p>
+        <a href="/privacy">Політика приватності</a>
+        <a href="/offer">Публічна оферта</a>
+        <a href="/terms">Умови використання</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 «<%= settings.org_legal_name %>». KRS: <%= settings.org_krs %> · NIP: <%= settings.org_nip %> · REGON: <%= settings.org_regon %></span>
+      <span><a href="/privacy">Політика приватності</a><a href="/offer">Оферта</a></span>
+    </div>
+  </div>
+</footer>
+<script src="/assets/script.js"></script>
+</body>
+</html>

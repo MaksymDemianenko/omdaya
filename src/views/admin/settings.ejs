@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<link rel="stylesheet" href="/assets/admin.css">
+</head>
+<body>
+<%- include('partials/nav') %>
+<div class="admin-wrap">
+  <h1>Налаштування сайту</h1>
+  <p class="admin-sub">Тексти та дані, які використовуються на всіх сторінках сайту.</p>
+
+  <% if (saved) { %><div class="saved-msg">Збережено ✓</div><% } %>
+
+  <form method="POST" action="/admin/settings">
+    <div class="admin-card">
+      <div class="settings-section-title">Юридична інформація</div>
+      <div class="form-row"><label>Назва організації (коротка)</label><input type="text" name="org_name" value="<%= settings.org_name %>"></div>
+      <div class="form-row"><label>Повна юридична назва</label><input type="text" name="org_legal_name" value="<%= settings.org_legal_name %>"></div>
+      <div class="form-row"><label>KRS (реєстраційний номер)</label><input type="text" name="org_krs" value="<%= settings.org_krs %>"></div>
+      <div class="form-row"><label>NIP (податковий номер)</label><input type="text" name="org_nip" value="<%= settings.org_nip %>"></div>
+      <div class="form-row"><label>REGON</label><input type="text" name="org_regon" value="<%= settings.org_regon %>" placeholder="якщо є"></div>
+      <div class="form-row"><label>Юридична адреса</label><input type="text" name="org_address" value="<%= settings.org_address %>"></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="settings-section-title">Головний екран (Hero)</div>
+      <div class="form-row"><label>Ярлик над заголовком</label><input type="text" name="hero_eyebrow" value="<%= settings.hero_eyebrow %>"></div>
+      <div class="form-row"><label>Заголовок</label><textarea name="hero_title"><%= settings.hero_title %></textarea></div>
+      <div class="form-row"><label>Підзаголовок</label><textarea name="hero_lead"><%= settings.hero_lead %></textarea></div>
+      <div class="form-row"><label>Курсивний слоган під підзаголовком</label><input type="text" name="hero_tagline" value="<%= settings.hero_tagline %>"></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="settings-section-title">Про нас — місія</div>
+      <div class="form-row"><label>Ярлик</label><input type="text" name="mission_eyebrow" value="<%= settings.mission_eyebrow %>"></div>
+      <div class="form-row"><label>Заголовок</label><textarea name="mission_title"><%= settings.mission_title %></textarea></div>
+      <div class="form-row"><label>Текст місії</label><textarea name="mission_text"><%= settings.mission_text %></textarea></div>
+      <div class="form-row"><label>Курсивна цитата</label><textarea name="mission_quote"><%= settings.mission_quote %></textarea></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="settings-section-title">Про нас — наша історія</div>
+      <div class="form-row"><label>Ярлик</label><input type="text" name="history_eyebrow" value="<%= settings.history_eyebrow %>"></div>
+      <div class="form-row"><label>Заголовок</label><textarea name="history_title"><%= settings.history_title %></textarea></div>
+      <div class="form-row"><label>Вступний абзац</label><textarea name="history_lead"><%= settings.history_lead %></textarea></div>
+      <div class="form-row"><label>Повний текст історії (кожен абзац з нового рядка, через пусту стрічку)</label><textarea name="history_body" style="min-height:260px;"><%= settings.history_body %></textarea></div>
+      <div class="form-row"><label>Виділена фраза в рамці</label><textarea name="history_highlight"><%= settings.history_highlight %></textarea></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="settings-section-title">Про нас — цінності (темний блок)</div>
+      <div class="form-row"><label>Головна фраза</label><textarea name="values_text"><%= settings.values_text %></textarea></div>
+      <div class="form-row"><label>Рядки нижче (кожен з нового рядка)</label><textarea name="values_lines"><%= settings.values_lines %></textarea></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="settings-section-title">Головна — «Чесно про наш етап»</div>
+      <div class="form-row"><label>Ярлик</label><input type="text" name="honesty_eyebrow" value="<%= settings.honesty_eyebrow %>"></div>
+      <div class="form-row"><label>Заголовок</label><input type="text" name="honesty_title" value="<%= settings.honesty_title %>"></div>
+      <div class="form-row"><label>Текст</label><textarea name="honesty_text"><%= settings.honesty_text %></textarea></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="settings-section-title">Цифри-досягнення</div>
+      <div class="form-row"><label>Кількість підопічних родин</label><input type="text" name="stat_families" value="<%= settings.stat_families %>"></div>
+      <div class="form-row"><label>Кількість постійних благодійників</label><input type="text" name="stat_donors" value="<%= settings.stat_donors %>"></div>
+      <div class="form-row"><label>Років роботи</label><input type="text" name="stat_years" value="<%= settings.stat_years %>"></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="settings-section-title">Контакти</div>
+      <div class="form-row"><label>Email</label><input type="text" name="contact_email" value="<%= settings.contact_email %>"></div>
+      <div class="form-row"><label>Телефон</label><input type="text" name="contact_phone" value="<%= settings.contact_phone %>"></div>
+      <div class="form-row"><label>Адреса</label><input type="text" name="contact_address" value="<%= settings.contact_address %>"></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="settings-section-title">Соціальні мережі</div>
+      <div class="form-row"><label>Facebook</label><input type="text" name="social_facebook" value="<%= settings.social_facebook %>"></div>
+      <div class="form-row"><label>Instagram</label><input type="text" name="social_instagram" value="<%= settings.social_instagram %>"></div>
+      <div class="form-row"><label>YouTube</label><input type="text" name="social_youtube" value="<%= settings.social_youtube %>"></div>
+      <div class="form-row"><label>Viber</label><input type="text" name="social_viber" value="<%= settings.social_viber %>"></div>
+      <div class="form-row"><label>WhatsApp (посилання wa.me)</label><input type="text" name="social_whatsapp" value="<%= settings.social_whatsapp %>" placeholder="https://wa.me/48734977171"></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="settings-section-title">Банківські реквізити</div>
+      <div class="form-row"><label>Текст на сторінці «Підтримати»</label><textarea name="bank_requisites"><%= settings.bank_requisites %></textarea></div>
+    </div>
+
+    <div class="admin-card">
+      <div class="settings-section-title">Технічне</div>
+      <div class="form-row"><label>Адреса сайту (для посилань у соцмережах, напр. https://omdaya.care)</label><input type="text" name="site_url" value="<%= settings.site_url %>" placeholder="https://omdaya.care"></div>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Зберегти зміни</button>
+  </form>
+</div>
+</body>
+</html>

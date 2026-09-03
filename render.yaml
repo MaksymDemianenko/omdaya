@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: omdaya-app
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DB_PATH
+        value: /data/data.sqlite
+    disk:
+      name: omdaya-data
+      mountPath: /data
+      sizeGB: 1

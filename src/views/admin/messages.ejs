@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<link rel="stylesheet" href="/assets/admin.css">
+</head>
+<body>
+<%- include('partials/nav') %>
+<div class="admin-wrap">
+  <h1>Повідомлення з форми контактів</h1>
+  <p class="admin-sub">Усього: <%= rows.length %></p>
+  <div class="admin-card">
+    <% if (rows.length === 0) { %>
+      <p style="color:var(--a-ink-soft); font-size:14px;">Повідомлень поки немає.</p>
+    <% } else { %>
+    <table>
+      <thead><tr><th>Дата</th><th>Ім'я</th><th>Email</th><th>Повідомлення</th></tr></thead>
+      <tbody>
+        <% rows.forEach(r => { %>
+          <tr>
+            <td><%= r.created_at %></td>
+            <td><%= r.name %></td>
+            <td><%= r.email %></td>
+            <td><%= r.message %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <% } %>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <%- include('partials/page-hero', {
+    eyebrow: 'Стати частиною дії',
+    pageTitle: 'Підтримка може бути різною',
+    lead: 'Важливий кожен відповідальний внесок, який створює для дітей більше безпеки, можливостей і надійних стосунків.'
+  }) %>
+
+  <section style="padding-top:0;">
+    <div class="wrap">
+      <div class="values-grid" style="grid-template-columns:repeat(2,1fr);">
+        <div class="value-card">
+          <h4>Підтримати фінансово</h4>
+          <p>Одноразовий або регулярний внесок у практичну допомогу й розвиток програм.</p>
+          <a class="more" href="#fundraisers" style="margin-top:10px; display:inline-block;">Підтримати OM DAYA →</a>
+        </div>
+        <div class="value-card">
+          <h4>Стати партнером</h4>
+          <p>Співпраця з організаціями, компаніями, освітніми, культурними й оздоровчими просторами.</p>
+          <a class="more" href="/contacts" style="margin-top:10px; display:inline-block;">Запропонувати партнерство →</a>
+        </div>
+        <div class="value-card">
+          <h4>Допомогти професійно</h4>
+          <p>Участь психологів, юристів, педагогів, соціальних працівників та наставників.</p>
+          <a class="more" href="/contacts" style="margin-top:10px; display:inline-block;">Долучитися як фахівець →</a>
+        </div>
+        <div class="value-card">
+          <h4>Стати волонтером</h4>
+          <p>Допомога під конкретні завдання з чіткою роллю, відповідальністю та правилами.</p>
+          <a class="more" href="/contacts" style="margin-top:10px; display:inline-block;">Стати волонтером →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="donate-section" id="fundraisers">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">Фінансова підтримка</span>
+        <h2>Офіційні збори фонду</h2>
+        <p style="margin-left:auto; margin-right:auto;">Фонд працює в Польщі, тож збори ведуться через офіційні платформи. На сторінці збору видно, скільки вже зібрано і на що йдуть кошти.</p>
+      </div>
+      <% if (fundraisers.length === 0) { %>
+        <div class="donate-card" style="text-align:center;">
+          <p style="color:var(--ink-soft);">Посилання на збори ще не додані.</p>
+          <p style="margin-top:8px;"><span class="placeholder-tag">додати в адмінці → «Збори»</span></p>
+        </div>
+      <% } else { %>
+        <div class="fundraiser-grid">
+          <% fundraisers.forEach(f => { %>
+            <div class="fundraiser-card">
+              <div class="fundraiser-media">
+                <% if (f.image_url) { %>
+                  <img src="<%= f.image_url %>" alt="<%= f.title %>" style="width:100%; height:100%; object-fit:cover;">
+                <% } else { %>
+                  <span class="ph-label">фото збору</span>
+                <% } %>
+              </div>
+              <div class="fundraiser-body">
+                <% if (f.platform) { %><span class="eyebrow"><%= f.platform %></span><% } %>
+                <h3><%= f.title %></h3>
+                <% if (f.description) { %><p><%= f.description %></p><% } %>
+                <a class="btn btn-primary" href="<%= f.url %>" target="_blank" rel="noopener" style="margin-top:18px; width:100%; justify-content:center;">
+                  Перейти до збору →
+                </a>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <div class="donate-card" style="margin-top:28px;">
+        <details class="req-accordion" open>
+          <summary>Банківські реквізити для прямого переказу</summary>
+          <div class="req-body"><%= settings.bank_requisites %></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="impact">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">Прозорість</span>
+        <h2>На що йдуть кошти</h2>
+      </div>
+      <div class="impact-grid">
+        <% impact.forEach(i => { %>
+          <div class="impact-card">
+            <div class="swatch"></div>
+            <div class="impact-body">
+              <div class="impact-amount"><%= Number(i.amount).toLocaleString('uk-UA') %> ₴</div>
+              <p><%= i.description %></p>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <div style="text-align:center; margin-top:24px;">
+        <a href="/transparency" class="more">Детальніше про звітність фонду →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

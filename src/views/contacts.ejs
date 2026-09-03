@@ -1,0 +1,59 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <%- include('partials/page-hero', {
+    eyebrow: 'Контакти',
+    pageTitle: 'Звʼяжіться з нами',
+    lead: 'Маєте питання про фонд, пожертви чи співпрацю? Напишіть нам будь-яким зручним способом.'
+  }) %>
+
+  <section style="padding-top:10px;">
+    <div class="wrap">
+      <div class="contact-grid">
+        <div class="contact-info-card">
+          <div class="contact-info-row">
+            <div class="contact-info-icon">📍</div>
+            <div><h4>Адреса</h4><p><%= settings.contact_address %></p></div>
+          </div>
+          <div class="contact-info-row">
+            <div class="contact-info-icon">✉️</div>
+            <div><h4>Email</h4><p><%= settings.contact_email %></p></div>
+          </div>
+          <div class="contact-info-row">
+            <div class="contact-info-icon">📞</div>
+            <div><h4>Телефон</h4><p><%= settings.contact_phone %></p></div>
+          </div>
+          <div class="contact-info-row">
+            <div class="contact-info-icon">💬</div>
+            <div>
+              <h4>Соцмережі</h4>
+              <% if (settings.social_facebook) { %><a href="<%= settings.social_facebook %>" target="_blank" rel="noopener">Facebook</a><% } %>
+              <% if (settings.social_instagram) { %><a href="<%= settings.social_instagram %>" target="_blank" rel="noopener">Instagram</a><% } %>
+              <% if (settings.social_whatsapp) { %><a href="<%= settings.social_whatsapp %>" target="_blank" rel="noopener">WhatsApp</a><% } %>
+              <% if (settings.social_viber) { %><a href="<%= settings.social_viber %>" target="_blank" rel="noopener">Viber</a><% } %>
+            </div>
+          </div>
+        </div>
+
+        <% if (sent) { %>
+          <div class="contact-form" style="display:flex; align-items:center; justify-content:center; text-align:center;">
+            <div>
+              <h3 style="font-family:'Fraunces',serif; font-size:22px;">Дякуємо!</h3>
+              <p style="margin-top:10px; color:var(--ink-soft);">Ваше повідомлення надіслано. Ми звʼяжемось з вами найближчим часом.</p>
+            </div>
+          </div>
+        <% } else { %>
+          <form class="contact-form" method="POST" action="/contacts">
+            <div class="form-row"><label>Ім'я</label><input type="text" name="name" required placeholder="Ваше ім'я"></div>
+            <div class="form-row"><label>Email</label><input type="email" name="email" required placeholder="you@email.com"></div>
+            <div class="form-row"><label>Повідомлення</label><textarea name="message" required placeholder="Ваше повідомлення"></textarea></div>
+            <button class="btn btn-primary" type="submit" style="width:100%;">Надіслати</button>
+          </form>
+        <% } %>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

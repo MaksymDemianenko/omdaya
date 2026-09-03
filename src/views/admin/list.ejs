@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<link rel="stylesheet" href="/assets/admin.css">
+</head>
+<body>
+<%- include('partials/nav') %>
+<div class="admin-wrap">
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+    <h1><%= title %></h1>
+    <a class="btn btn-primary" href="/admin/<%= table %>/new">+ Додати</a>
+  </div>
+  <p class="admin-sub">Усього записів: <%= rows.length %></p>
+
+  <div class="admin-card">
+    <% if (rows.length === 0) { %>
+      <p style="color:var(--a-ink-soft); font-size:14px;">Поки немає записів.</p>
+    <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <% fields.forEach(f => { %><th><%= f.label %></th><% }) %>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% rows.forEach(row => { %>
+          <tr>
+            <% fields.forEach(f => { %>
+              <td><%= (row[f.name] || '').toString().slice(0, 80) %></td>
+            <% }) %>
+            <td class="actions">
+              <a href="/admin/<%= table %>/<%= row.id %>/edit">Редагувати</a>
+              <form method="POST" action="/admin/<%= table %>/<%= row.id %>/delete" style="display:inline;" onsubmit="return confirm('Видалити цей запис?');">
+                <button type="submit">Видалити</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <% } %>
+  </div>
+</div>
+</body>
+</html>

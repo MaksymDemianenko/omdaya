@@ -1,0 +1,121 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <section class="hero">
+    <svg class="petal-blob" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="heroGradHome" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#4BA1DE"/>
+          <stop offset="35%" stop-color="#7C4DA9"/>
+          <stop offset="70%" stop-color="#B2417F"/>
+          <stop offset="100%" stop-color="#F2B705"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#heroGradHome)" d="M300,40 C420,140 520,220 480,340 C440,460 320,540 300,560 C280,540 160,460 120,340 C80,220 180,140 300,40 Z"/>
+    </svg>
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow"><%= settings.hero_eyebrow %></span>
+        <h1 style="margin-top:18px;"><%= settings.hero_title %></h1>
+        <p class="lead"><%= settings.hero_lead %></p>
+        <p style="margin-top:14px; font-family:'Fraunces',serif; font-style:italic; color:var(--magenta); font-size:17px;"><%= settings.hero_tagline %></p>
+        <div class="hero-ctas">
+          <a href="/programs" class="btn btn-primary">Як ми допомагаємо</a>
+          <a href="/donate" class="btn btn-ghost">Підтримати OM DAYA</a>
+        </div>
+        <div class="trust-row">
+          <div class="stat"><%= settings.stat_families %><small>підопічних родин</small></div>
+          <div class="stat"><%= settings.stat_donors %><small>постійних благодійників</small></div>
+          <div class="stat"><%= settings.stat_years %><small>років роботи</small></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="/assets/logo.png" alt="<%= settings.org_name %> — символ організації">
+      </div>
+    </div>
+  </section>
+
+  <section class="pillars">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Напрями роботи</span>
+        <h2>Поруч на кожному етапі</h2>
+        <p>OM DAYA підтримує українських дітей і родини в Україні та за її межами. Кожен напрям розвивається поступово, разом із фахівцями й перевіреними партнерами.</p>
+      </div>
+      <div class="pillars-grid" style="grid-template-columns:repeat(auto-fit, minmax(240px,1fr));">
+        <% programs.forEach(p => { %>
+          <div class="pillar-card">
+            <div class="pillar-icon"><%= p.icon || '💛' %></div>
+            <h3><%= p.title %></h3>
+            <p><%= p.description %></p>
+            <a class="more" href="/programs">Детальніше →</a>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-section">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow"><%= settings.honesty_eyebrow %></span>
+        <h2><%= settings.honesty_title %></h2>
+        <p style="margin-left:auto; margin-right:auto; max-width:70ch;"><%= settings.honesty_text %></p>
+      </div>
+      <div class="pillars-grid" style="grid-template-columns:repeat(2,1fr); margin-top:40px;">
+        <div class="pillar-card" style="background:rgba(255,255,255,0.06); box-shadow:none;">
+          <h3 style="color:#fff;">Допомога, яку ми вже надаємо</h3>
+          <p style="color:rgba(255,255,255,0.75);">Ми робимо перші практичні кроки у підтримці українських дітей: допомагаємо покращувати умови у закладах, долучаємося до вирішення питань здоров’я, даруємо дітям подарунки та моменти радості.</p>
+        </div>
+        <div class="pillar-card" style="background:rgba(255,255,255,0.06); box-shadow:none;">
+          <h3 style="color:#fff;">Напрями, які ми розвиваємо</h3>
+          <p style="color:rgba(255,255,255,0.75);">Разом із фахівцями й партнерами ми створюємо програми адаптації, наставництва, підтримки родин, супроводу після виходу та безпечного відпочинку. Про запуск кожної програми ми повідомимо окремо.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <% if (story) { %>
+  <section class="stories-section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Реальні справи</span>
+        <h2>Те, що вже стало можливим</h2>
+        <p>Чесні кадри процесу й результату — без постановочних портретів.</p>
+      </div>
+      <div class="story-card">
+        <div class="story-media">
+          <% if (story.image_url) { %>
+            <img src="<%= story.image_url %>" alt="<%= story.title %>" style="width:100%; height:100%; object-fit:cover;">
+          <% } else { %>
+            <span class="ph-label">фото — додати</span>
+          <% } %>
+        </div>
+        <div class="story-content">
+          <span class="eyebrow">Реальна справа OM DAYA</span>
+          <h3><%= story.title %></h3>
+          <p><%= story.excerpt %></p>
+          <a class="more" href="/stories" style="margin-top:16px; display:inline-block;">Усі справи →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <% } %>
+
+  <section>
+    <div class="wrap">
+      <div class="newsletter">
+        <span class="eyebrow" style="justify-content:center;">Спільнота</span>
+        <h2 style="margin-top:14px;">Станьте частиною нашої спільноти</h2>
+        <p>Новини фонду, звіти про проєкти та можливості долучитись — не частіше ніж 1–2 рази на тиждень.</p>
+        <form class="newsletter-form" action="/newsletter" method="POST">
+          <input type="email" name="email" placeholder="Ваш email" required>
+          <button class="btn btn-primary" type="submit">Доєднатися</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

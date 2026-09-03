@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<link rel="stylesheet" href="/assets/admin.css">
+</head>
+<body>
+<%- include('partials/nav') %>
+<div class="admin-wrap">
+  <h1>Підписники розсилки</h1>
+  <p class="admin-sub">Усього: <%= rows.length %></p>
+  <div class="admin-card">
+    <% if (rows.length === 0) { %>
+      <p style="color:var(--a-ink-soft); font-size:14px;">Підписників поки немає.</p>
+    <% } else { %>
+    <table>
+      <thead><tr><th>Дата</th><th>Email</th></tr></thead>
+      <tbody>
+        <% rows.forEach(r => { %>
+          <tr><td><%= r.created_at %></td><td><%= r.email %></td></tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <% } %>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <%- include('partials/page-hero', {
+    eyebrow: 'Питання',
+    pageTitle: 'Часті запитання',
+    lead: 'Відповіді на питання, які найчастіше ставлять благодійники.'
+  }) %>
+
+  <section style="padding-top:10px;">
+    <div class="wrap">
+      <div class="faq-list">
+        <% faq.forEach((f, idx) => { %>
+          <details class="faq-item" <%= idx === 0 ? 'open' : '' %>>
+            <summary><%= f.question %></summary>
+            <p><%= f.answer %></p>
+          </details>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="cta-band">
+        <h2>Не знайшли відповідь?</h2>
+        <p>Напишіть нам — ми відповімо на будь-яке питання про фонд чи пожертви.</p>
+        <a href="/contacts" class="btn btn-ghost">Звʼязатися з нами</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

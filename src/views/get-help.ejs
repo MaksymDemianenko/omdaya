@@ -1,0 +1,74 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <%- include('partials/page-hero', {
+    eyebrow: 'Як отримати допомогу',
+    pageTitle: 'Розкажіть нам про свою ситуацію',
+    lead: 'Не потрібно робити звернення офіційним або заздалегідь знати, який саме вид допомоги вам потрібен.'
+  }) %>
+
+  <section style="padding-top:10px;">
+    <div class="wrap">
+      <div class="values-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="value-card">
+          <span class="eyebrow">01</span>
+          <h4 style="margin-top:10px;">Надішліть звернення</h4>
+          <p>Коротко опишіть, кому потрібна допомога, у чому полягає потреба і як із вами зв'язатися.</p>
+        </div>
+        <div class="value-card">
+          <span class="eyebrow">02</span>
+          <h4 style="margin-top:10px;">Ми ознайомимося</h4>
+          <p>Зазвичай відповідаємо протягом 2–3 робочих днів. За потреби поставимо додаткові запитання.</p>
+        </div>
+        <div class="value-card">
+          <span class="eyebrow">03</span>
+          <h4 style="margin-top:10px;">Визначимо наступний крок</h4>
+          <p>Рішення залежить від потреб дитини, можливостей фонду та наявності фахівців і партнерів.</p>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:36px;">
+        <a href="/contacts" class="btn btn-primary">Надіслати звернення</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="pillars">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Кому ми допомагаємо</span>
+        <h2>У центрі кожного рішення — безпека та майбутнє дитини</h2>
+      </div>
+      <div class="team-grid" style="grid-template-columns:repeat(4,1fr);">
+        <div class="value-card">
+          <h4>Дітям із досвідом інституційного виховання</h4>
+          <p>Головний пріоритет — знайомство з безпечним, самостійним життям і підтримувальними стосунками.</p>
+        </div>
+        <div class="value-card">
+          <h4>Дітям у складних обставинах</h4>
+          <p>Розглядаємо окремі звернення, пов'язані зі здоров'ям, необхідними речами та умовами життя.</p>
+        </div>
+        <div class="value-card">
+          <h4>Родинам у кризі</h4>
+          <p>Розвиваємо підтримку сімей, яким потрібна професійна допомога для створення безпечного середовища.</p>
+        </div>
+        <div class="value-card">
+          <h4>Людям поруч із дітьми</h4>
+          <p>Співпрацюємо із закладами, педагогами, наставниками, волонтерами й відповідальними дорослими.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="cta-band">
+        <h2>Дитині потрібна не лише допомога. Їй потрібен досвід іншого життя.</h2>
+        <p>Життя, у якому є безпека, право вибору, люди, яким можна довіряти, і майбутнє, яке не визначається стінами закладу.</p>
+        <a href="/programs" class="btn btn-ghost">Напрями роботи</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
