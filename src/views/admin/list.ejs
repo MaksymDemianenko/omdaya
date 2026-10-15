@@ -11,7 +11,7 @@
 <div class="admin-wrap">
   <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
     <h1><%= title %></h1>
-    <a class="btn btn-primary" href="/admin/<%= table %>/new">+ Додати</a>
+    <a class="btn btn-primary" href="/admin/<%= basePath %>/new">+ Додати</a>
   </div>
   <p class="admin-sub">Усього записів: <%= rows.length %></p>
 
@@ -33,8 +33,8 @@
               <td><%= (row[f.name] || '').toString().slice(0, 80) %></td>
             <% }) %>
             <td class="actions">
-              <a href="/admin/<%= table %>/<%= row.id %>/edit">Редагувати</a>
-              <form method="POST" action="/admin/<%= table %>/<%= row.id %>/delete" style="display:inline;" onsubmit="return confirm('Видалити цей запис?');">
+              <a href="/admin/<%= basePath %>/<%= row.id %>/edit">Редагувати</a>
+              <form method="POST" action="/admin/<%= basePath %>/<%= row.id %>/delete" style="display:inline;" onsubmit="return confirm('Видалити цей запис?');">
                 <button type="submit">Видалити</button>
               </form>
             </td>

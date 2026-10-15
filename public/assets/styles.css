@@ -481,7 +481,7 @@ details.req-accordion[open] summary::after{content:"–";}
 .newsletter h2{font-size:26px;}
 .newsletter p{margin-top:10px; color:var(--ink-soft);}
 .newsletter-form{
-  display:flex; gap:10px; max-width:420px; margin:26px auto 0;
+  display:flex; flex-wrap:wrap; gap:10px; max-width:420px; margin:26px auto 0;
 }
 @media (max-width:480px){ .newsletter-form{flex-direction:column;} }
 .newsletter-form input{
@@ -528,3 +528,32 @@ footer{background:#fff; border-top:1px solid rgba(64,18,48,0.08); padding-top:64
 .footer-bottom a{color:var(--ink-faint); margin-left:16px;}
 
 ::selection{background:var(--purple); color:#fff;}
+
+/* ---------- PHOTOS & REPORTS ---------- */
+.photo-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:34px;}
+.photo-grid-sm{grid-template-columns:repeat(4,1fr); gap:12px; margin-top:22px;}
+@media (max-width:800px){ .photo-grid, .photo-grid-sm{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:480px){ .photo-grid, .photo-grid-sm{grid-template-columns:1fr;} }
+.photo-fig{margin:0; border-radius:var(--radius-sm); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);}
+.photo-fig img{width:100%; aspect-ratio:4/3; object-fit:cover; display:block;}
+.photo-grid-sm .photo-fig img{aspect-ratio:4/5;}
+.photo-fig figcaption{padding:10px 14px; font-size:13px; color:var(--ink-soft);}
+
+.story-mini{transition:transform .2s ease, box-shadow .2s ease;}
+a.story-mini:hover{transform:translateY(-3px); box-shadow:var(--shadow);}
+.story-mini-media img{object-position:center 60%;}
+.story-media img{object-position:center 60%;}
+
+.report-card{
+  background:var(--surface); border-radius:var(--radius); padding:30px;
+  box-shadow:var(--shadow-sm); margin-bottom:22px;
+}
+.report-head{display:flex; justify-content:space-between; gap:16px; align-items:flex-start; flex-wrap:wrap;}
+.report-head h3{font-size:21px; margin-top:8px; max-width:34ch;}
+.report-status{
+  font-size:12px; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
+  color:var(--purple); background:var(--lavender); padding:7px 14px; border-radius:100px;
+}
+.report-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:22px; margin-top:22px;}
+.report-grid p{margin-top:6px; color:var(--ink-soft); font-size:15px;}
+.report-note{margin-top:20px; font-size:13px; color:var(--ink-faint);}

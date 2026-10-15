@@ -54,40 +54,46 @@
   <section style="padding-top:0;">
     <div class="wrap">
       <div class="section-head">
-        <span class="eyebrow">Фінансова звітність</span>
-        <h2>2026 — перший фінансовий рік</h2>
-        <p>Перший річний фінансовий звіт OM DAYA буде опублікований після завершення фінансового року та підготовки обов'язкової звітності.</p>
-      </div>
-      <div class="donate-card" style="max-width:100%;">
-        <div class="impact-grid" style="grid-template-columns:repeat(4,1fr);">
-          <div><div class="eyebrow">Період</div><p style="margin-top:6px; color:var(--ink-soft);">Дата початку й завершення</p></div>
-          <div><div class="eyebrow">Отримано</div><p style="margin-top:6px; color:var(--ink-soft);">Підтверджена сума</p></div>
-          <div><div class="eyebrow">Витрачено</div><p style="margin-top:6px; color:var(--ink-soft);">Сума та призначення</p></div>
-          <div><div class="eyebrow">Результат</div><p style="margin-top:6px; color:var(--ink-soft);">Що вдалося зробити</p></div>
-        </div>
-      </div>
-      <p style="margin-top:14px; color:var(--ink-faint); font-size:13px;">Це шаблон оформлення, а не вигаданий проєкт чи фінансовий звіт.</p>
-    </div>
-  </section>
-
-  <section class="stories-section">
-    <div class="wrap">
-      <div class="section-head">
         <span class="eyebrow">Звіти про проєкти</span>
         <h2>Від потреби — до результату</h2>
-        <p>Після завершення кожної допомоги тут з'являтиметься окремий зрозумілий звіт.</p>
+        <p>Для кожної допомоги — окремий зрозумілий звіт: скільки отримано, на що витрачено і що стало можливим.</p>
       </div>
-      <div class="story-card">
-        <div class="story-media"><span class="ph-label">місце для реального фото завершеного проєкту</span></div>
-        <div class="story-content">
-          <span class="eyebrow">Приклад структури звіту</span>
-          <h3>Назва завершеного проєкту</h3>
-          <p>Коротко й без використання історії дитини: яка була потреба, що зробила OM DAYA та який результат став можливим.</p>
+
+      <% if (reports.length) { %>
+        <% reports.forEach(r => { %>
+          <article class="report-card">
+            <div class="report-head">
+              <div>
+                <% if (r.place) { %><span class="eyebrow"><%= r.place %></span><% } %>
+                <h3><%= r.title %></h3>
+              </div>
+              <% if (r.status) { %><span class="report-status"><%= r.status %></span><% } %>
+            </div>
+            <div class="report-grid">
+              <% if (r.period) { %><div><div class="eyebrow">Період</div><p><%= r.period %></p></div><% } %>
+              <% if (r.received) { %><div><div class="eyebrow">Отримано</div><p><%= r.received %></p></div><% } %>
+              <% if (r.spent) { %><div><div class="eyebrow">Витрачено</div><p><%= r.spent %></p></div><% } %>
+              <% if (r.result) { %><div><div class="eyebrow">Результат</div><p><%= r.result %></p></div><% } %>
+            </div>
+            <% const photos = parseGallery(r.gallery); %>
+            <% if (photos.length) { %>
+              <div class="photo-grid photo-grid-sm">
+                <% photos.forEach(ph => { %>
+                  <figure class="photo-fig">
+                    <img src="<%= ph.url %>" alt="<%= ph.caption || r.title %>" loading="lazy">
+                    <% if (ph.caption) { %><figcaption><%= ph.caption %></figcaption><% } %>
+                  </figure>
+                <% }) %>
+              </div>
+            <% } %>
+            <% if (r.note) { %><p class="report-note"><%= r.note %></p><% } %>
+          </article>
+        <% }) %>
+      <% } else { %>
+        <div style="background:var(--lavender); border-radius:var(--radius); padding:22px;">
+          <p style="color:var(--ink-soft);">OM DAYA лише починає свій шлях. Перші звіти з’являться після завершення та документального закриття відповідних проєктів.</p>
         </div>
-      </div>
-      <div style="background:var(--lavender); border-radius:var(--radius); padding:22px; margin-top:20px;">
-        <p style="color:var(--ink-soft);">OM DAYA лише починає свій шлях. Перші звіти з'являться після завершення та документального закриття відповідних проєктів.</p>
-      </div>
+      <% } %>
     </div>
   </section>
 
@@ -118,6 +124,7 @@
     <div class="wrap">
       <div class="donate-card" style="max-width:100%;">
         <h3 style="font-size:19px;">У річному огляді покажемо</h3>
+        <p style="margin-top:8px; color:var(--ink-soft); font-size:14.5px;">Перший річний фінансовий звіт OM DAYA буде опубліковано після завершення фінансового року та підготовки обов’язкової звітності.</p>
         <ul style="margin:16px 0 0; padding-left:20px; color:var(--ink-soft); font-size:15px; line-height:2;">
           <li>загальну суму надходжень;</li>
           <li>витрати за напрямами допомоги;</li>

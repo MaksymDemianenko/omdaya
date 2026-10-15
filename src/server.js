@@ -7,6 +7,7 @@ const pagesRouter = require('./routes/pages');
 const adminRouter = require('./routes/admin');
 
 const app = express();
+app.set('trust proxy', 1); // Render працює за проксі — потрібно для коректного https у посиланнях
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));

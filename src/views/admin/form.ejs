@@ -10,7 +10,7 @@
 <%- include('partials/nav') %>
 <div class="admin-wrap">
   <h1><%= title %></h1>
-  <p class="admin-sub"><a href="/admin/<%= table %>">← Назад до списку</a></p>
+  <p class="admin-sub"><a href="/admin/<%= basePath %>">← Назад до списку</a></p>
 
   <div class="admin-card">
     <% if (table === 'fundraisers' && !item.id) { %>
@@ -24,7 +24,7 @@
       </div>
     <% } %>
 
-    <form method="POST" action="<%= item.id ? `/admin/${table}/${item.id}/edit` : `/admin/${table}/new` %>" id="itemForm">
+    <form method="POST" action="<%= item.id ? `/admin/${basePath}/${item.id}/edit` : `/admin/${basePath}/new` %>" id="itemForm">
       <% fields.forEach(f => { %>
         <div class="form-row">
           <label><%= f.label %></label>
@@ -36,7 +36,7 @@
         </div>
       <% }) %>
       <button class="btn btn-primary" type="submit">Зберегти</button>
-      <a class="btn btn-ghost" href="/admin/<%= table %>">Скасувати</a>
+      <a class="btn btn-ghost" href="/admin/<%= basePath %>">Скасувати</a>
     </form>
   </div>
 </div>

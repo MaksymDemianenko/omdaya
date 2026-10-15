@@ -19,7 +19,9 @@
 <meta property="og:site_name" content="<%= settings.org_name %>">
 <meta property="og:title" content="<%= title %> — <%= settings.org_name %>">
 <meta property="og:description" content="<%= typeof pageDescription !== 'undefined' ? pageDescription : settings.hero_lead %>">
-<meta property="og:image" content="<%= (settings.site_url || '').replace(/\/$/, '') %>/assets/og-image.jpg">
+<meta property="og:image" content="<%= baseUrl %>/assets/og-image.jpg">
+<meta property="og:url" content="<%= canonicalUrl %>">
+<link rel="canonical" href="<%= canonicalUrl %>">
 <meta property="og:locale" content="uk_UA">
 <meta name="twitter:card" content="summary_large_image">
 

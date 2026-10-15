@@ -43,6 +43,7 @@ router.get('/', (req, res) => {
     programs: db.prepare('SELECT COUNT(*) c FROM programs').get().c,
     impact: db.prepare('SELECT COUNT(*) c FROM impact_amounts').get().c,
     fundraisers: db.prepare('SELECT COUNT(*) c FROM fundraisers').get().c,
+    reports: db.prepare('SELECT COUNT(*) c FROM reports').get().c,
     messages: db.prepare('SELECT COUNT(*) c FROM messages').get().c,
     newsletter: db.prepare('SELECT COUNT(*) c FROM newsletter').get().c,
   };
@@ -62,18 +63,18 @@ router.post('/settings', (req, res) => {
 });
 
 // ---------- generic CRUD builder ----------
-function buildCrud({ table, fields, listTitle, singularTitle, orderBy = 'sort_order' }) {
+function buildCrud({ table, fields, listTitle, singularTitle, orderBy = 'sort_order', basePath = table }) {
   const r = express.Router();
 
   r.get('/', (req, res) => {
     const rows = db.prepare(`SELECT * FROM ${table} ORDER BY ${orderBy}`).all();
     res.render('admin/list', {
-      title: listTitle, rows, table, fields, layout: false,
+      title: listTitle, rows, table, basePath, fields, layout: false,
     });
   });
 
   r.get('/new', (req, res) => {
-    res.render('admin/form', { title: `Нове: ${singularTitle}`, table, fields, item: {}, layout: false });
+    res.render('admin/form', { title: `Нове: ${singularTitle}`, table, basePath, fields, item: {}, layout: false });
   });
 
   r.post('/new', (req, res) => {
@@ -81,13 +82,13 @@ function buildCrud({ table, fields, listTitle, singularTitle, orderBy = 'sort_or
     const placeholders = cols.map(() => '?').join(',');
     const values = cols.map(c => req.body[c] ?? '');
     db.prepare(`INSERT INTO ${table} (${cols.join(',')}) VALUES (${placeholders})`).run(...values);
-    res.redirect(`/admin/${table}`);
+    res.redirect(`/admin/${basePath}`);
   });
 
   r.get('/:id/edit', (req, res) => {
     const item = db.prepare(`SELECT * FROM ${table} WHERE id = ?`).get(req.params.id);
-    if (!item) return res.redirect(`/admin/${table}`);
-    res.render('admin/form', { title: `Редагувати: ${singularTitle}`, table, fields, item, layout: false });
+    if (!item) return res.redirect(`/admin/${basePath}`);
+    res.render('admin/form', { title: `Редагувати: ${singularTitle}`, table, basePath, fields, item, layout: false });
   });
 
   r.post('/:id/edit', (req, res) => {
@@ -95,12 +96,12 @@ function buildCrud({ table, fields, listTitle, singularTitle, orderBy = 'sort_or
     const setSql = cols.map(c => `${c} = ?`).join(', ');
     const values = cols.map(c => req.body[c] ?? '');
     db.prepare(`UPDATE ${table} SET ${setSql} WHERE id = ?`).run(...values, req.params.id);
-    res.redirect(`/admin/${table}`);
+    res.redirect(`/admin/${basePath}`);
   });
 
   r.post('/:id/delete', (req, res) => {
     db.prepare(`DELETE FROM ${table} WHERE id = ?`).run(req.params.id);
-    res.redirect(`/admin/${table}`);
+    res.redirect(`/admin/${basePath}`);
   });
 
   return r;
@@ -114,7 +115,8 @@ router.use('/stories', buildCrud({
     { name: 'title', label: 'Заголовок', type: 'text' },
     { name: 'excerpt', label: 'Короткий уривок', type: 'textarea' },
     { name: 'body', label: 'Повний текст', type: 'textarea' },
-    { name: 'image_url', label: 'URL фото', type: 'text' },
+    { name: 'image_url', label: 'Головне фото (шлях, напр. /assets/stories/photo.jpg)', type: 'text' },
+    { name: 'gallery', label: 'Галерея: кожен рядок «шлях | підпис»', type: 'textarea' },
     { name: 'published', label: 'Опубліковано (1/0)', type: 'text' },
     { name: 'sort_order', label: 'Порядок', type: 'text' },
   ],
@@ -155,12 +157,33 @@ router.use('/programs', buildCrud({
   ],
 }));
 
+
+router.use('/reports', buildCrud({
+  table: 'reports',
+  listTitle: 'Звіти про проєкти (розділ «Звітність»)',
+  singularTitle: 'звіт',
+  fields: [
+    { name: 'title', label: 'Назва проєкту', type: 'text' },
+    { name: 'place', label: 'Де / для кого (необов’язково)', type: 'text' },
+    { name: 'status', label: 'Статус (напр. «Перший етап», «Очікується звіт»)', type: 'text' },
+    { name: 'period', label: 'Період', type: 'text' },
+    { name: 'received', label: 'Отримано (сума)', type: 'text' },
+    { name: 'spent', label: 'Витрачено (сума та призначення)', type: 'textarea' },
+    { name: 'result', label: 'Результат — що вдалося зробити', type: 'textarea' },
+    { name: 'note', label: 'Примітка (дрібним шрифтом)', type: 'textarea' },
+    { name: 'gallery', label: 'Фото: кожен рядок «шлях | підпис»', type: 'textarea' },
+    { name: 'published', label: 'Опубліковано (1/0)', type: 'text' },
+    { name: 'sort_order', label: 'Порядок', type: 'text' },
+  ],
+}));
+
 router.use('/impact', buildCrud({
   table: 'impact_amounts',
+  basePath: 'impact',
   listTitle: 'Суми пожертв',
   singularTitle: 'сума',
   fields: [
-    { name: 'amount', label: 'Сума (грн)', type: 'text' },
+    { name: 'amount', label: 'Сума (€)', type: 'text' },
     { name: 'description', label: 'На що йде', type: 'text' },
     { name: 'sort_order', label: 'Порядок', type: 'text' },
   ],

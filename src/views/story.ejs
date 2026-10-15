@@ -1,0 +1,41 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <section class="page-hero" style="padding-bottom:30px;">
+    <div class="wrap">
+      <div class="breadcrumb"><a href="/">Головна</a> / <a href="/stories">Реальні справи</a> / Історія</div>
+      <span class="eyebrow">Реальна справа OM DAYA</span>
+      <h1 style="margin-top:14px; font-size:clamp(26px,3.4vw,38px); max-width:24ch;"><%= story.title %></h1>
+    </div>
+  </section>
+
+  <section style="padding-top:10px;">
+    <div class="wrap">
+      <div style="max-width:760px; color:var(--ink-soft); font-size:16px; line-height:1.85;">
+        <% String(story.body || '').split('\n\n').filter(Boolean).forEach(paragraph => { %>
+          <p style="margin-bottom:18px;"><%= paragraph %></p>
+        <% }) %>
+      </div>
+
+      <% const photos = parseGallery(story.gallery); %>
+      <% if (photos.length) { %>
+        <div class="photo-grid">
+          <% photos.forEach(ph => { %>
+            <figure class="photo-fig">
+              <img src="<%= ph.url %>" alt="<%= ph.caption || story.title %>" loading="lazy">
+              <% if (ph.caption) { %><figcaption><%= ph.caption %></figcaption><% } %>
+            </figure>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <div style="margin-top:36px; display:flex; gap:14px; flex-wrap:wrap;">
+        <a href="/transparency" class="btn btn-ghost">Звітність</a>
+        <a href="/donate" class="btn btn-primary">Підтримати</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

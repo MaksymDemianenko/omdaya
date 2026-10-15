@@ -1,3 +1,6 @@
+<% const contactWay = filled(settings.contact_email) ? 'на ' + settings.contact_email : 'через форму на сторінці «Контакти»';
+   const contactTarget = filled(settings.contact_email) ? settings.contact_email : 'форма на сторінці «Контакти»';
+   const isDraft = settings.legal_draft !== '0'; %>
 <%- include('partials/head') %>
 <%- include('partials/header') %>
 
@@ -10,7 +13,9 @@
 
   <section>
     <div class="wrap" style="max-width:800px;">
+      <% if (isDraft) { %>
       <p style="margin-bottom:18px;"><span class="placeholder-tag">чернетка — перевірити з юристом перед публікацією</span></p>
+      <% } %>
 
       <div style="color:var(--ink-soft); font-size:15px; line-height:1.8;">
         <h3 style="color:var(--ink); font-size:18px; margin:26px 0 10px;">1. Загальні положення</h3>
@@ -20,15 +25,17 @@
         <p>Тексти, фото та інші матеріали на сайті належать Фонду або використовуються за згодою правовласників. Копіювання матеріалів без дозволу заборонено.</p>
 
         <h3 style="color:var(--ink); font-size:18px; margin:26px 0 10px;">3. Історії та фото підопічних</h3>
-        <p>Історії та фото родин публікуються виключно за їхньою письмовою згодою. Якщо ви впізнали себе чи близьких і хочете, щоб матеріал було видалено — напишіть нам на <%= settings.contact_email %>.</p>
+        <p>Історії та фото родин публікуються виключно за їхньою письмовою згодою. Якщо ви впізнали себе чи близьких і хочете, щоб матеріал було видалено — напишіть нам <%= contactWay %>.</p>
 
         <h3 style="color:var(--ink); font-size:18px; margin:26px 0 10px;">4. Відповідальність</h3>
         <p>Фонд докладає зусиль, щоб інформація на сайті була точною та актуальною, але не гарантує відсутність технічних помилок.</p>
 
         <h3 style="color:var(--ink); font-size:18px; margin:26px 0 10px;">5. Контакти</h3>
-        <p>З питань щодо цих Умов звертайтесь: <%= settings.contact_email %></p>
+        <p>З питань щодо цих Умов звертайтесь: <%= contactTarget %></p>
 
+        <% if (isDraft) { %>
         <p style="margin-top:26px; font-size:13px;">Дата останнього оновлення: <span class="placeholder-tag">вказати дату публікації</span></p>
+        <% } %>
       </div>
     </div>
   </section>

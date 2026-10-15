@@ -54,6 +54,21 @@ CREATE TABLE IF NOT EXISTS impact_amounts (
   sort_order INTEGER DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS reports (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  place TEXT,
+  period TEXT,
+  received TEXT,
+  spent TEXT,
+  result TEXT,
+  note TEXT,
+  status TEXT,
+  gallery TEXT,
+  published INTEGER DEFAULT 1,
+  sort_order INTEGER DEFAULT 0
+);
+
 CREATE TABLE IF NOT EXISTS fundraisers (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT NOT NULL,
@@ -79,6 +94,10 @@ CREATE TABLE IF NOT EXISTS newsletter (
   created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 `);
+
+// Міграція: колонка gallery для історій (фото-галерея: рядок = «URL | підпис»)
+const storyCols = db.prepare("PRAGMA table_info(stories)").all().map((c) => c.name);
+if (!storyCols.includes('gallery')) db.exec('ALTER TABLE stories ADD COLUMN gallery TEXT');
 
 // ---------- default settings ----------
 // Ці поля — авторський текст сайту. Оновлюються автоматично при кожному деплої,
@@ -126,6 +145,7 @@ const operationalDefaults = {
   social_whatsapp: 'https://wa.me/48734977171',
   bank_requisites: 'IBAN: PL96 1940 1076 3297 1954 0000 0000\nBIC/SWIFT: AGRIPLPR\nНазва рахунку: OM DAYA\nТип рахунку: Konto SOLISTA Biznes\nОтримувач: Fundacja Om Daya',
   site_url: '',
+  legal_draft: '1',
 };
 
 const upsertKeep = db.prepare(`INSERT INTO settings (key, value) VALUES (?, ?)
@@ -150,11 +170,6 @@ for (const [key, value] of Object.entries(operationalDefaults)) upsertKeep.run(k
 // ---------- seed demo content only if tables are empty ----------
 const countRow = (table) => db.prepare(`SELECT COUNT(*) AS c FROM ${table}`).get().c;
 
-if (countRow('stories') === 0) {
-  const insert = db.prepare(`INSERT INTO stories (title, excerpt, body, image_url, published, sort_order) VALUES (?,?,?,?,?,?)`);
-  insert.run('Назва історії (приклад)', 'Короткий уривок історії — з’явиться після надання тексту фондом.', 'Повний текст історії родини. Замініть на реальну історію, надану фондом, за згодою родини.', '', 1, 1);
-}
-
 // FAQ і напрями роботи — текст цього релізу (v2). Якщо це перший запуск після
 // оновлення коду — оновлюємо їх до нових формулювань, навіть якщо рядки вже існували.
 if (countRow('faq') === 0 || versionBumped) {
@@ -171,11 +186,6 @@ if (countRow('faq') === 0 || versionBumped) {
   for (const it of items) insert.run(...it);
 }
 
-if (countRow('team') === 0) {
-  const insert = db.prepare(`INSERT INTO team (name, role, photo_url, sort_order) VALUES (?,?,?,?)`);
-  for (let i = 1; i <= 4; i++) insert.run("Ім'я Прізвище", 'Посада', '', i);
-}
-
 if (countRow('programs') === 0 || versionBumped) {
   db.exec('DELETE FROM programs');
   const insert = db.prepare(`INSERT INTO programs (title, description, icon, sort_order) VALUES (?,?,?,?)`);
@@ -185,26 +195,124 @@ if (countRow('programs') === 0 || versionBumped) {
   insert.run('Збереження родини та новий початок', 'Допомагаємо українським родинам у глибокій кризі знайти правову, психологічну й практичну підтримку та створити безпечні умови для дитини.', '🏡', 4);
 }
 
-if (countRow('impact_amounts') === 0) {
-  const insert = db.prepare(`INSERT INTO impact_amounts (amount, description, sort_order) VALUES (?,?,?)`);
-  insert.run(400, 'сесія арт-терапії для дитини', 1);
-  insert.run(1000, 'консультація з психотерапевтом', 2);
-  insert.run(3240, 'місяць курсів англійської мови', 3);
-  insert.run(18000, 'ноутбук для дистанційного навчання', 4);
-  insert.run(27000, 'путівка в табір психологічної реабілітації', 5);
+// Демо-записи (приклади з першої збірки сайту) більше не створюються.
+// Один раз видаляємо ті, що вже потрапили в базу і лишились незмінними —
+// реальні дані, які вписали в адмінці, не чіпаємо.
+const demoCleaned = db.prepare('SELECT value FROM settings WHERE key = ?').get('demo_cleanup_v1');
+if (!demoCleaned) {
+  db.prepare("DELETE FROM stories WHERE title = 'Назва історії (приклад)'").run();
+  db.prepare("DELETE FROM fundraisers WHERE url = 'https://' AND title = 'Назва збору (приклад)'").run();
+  db.prepare("DELETE FROM team WHERE name = 'Ім''я Прізвище' AND role = 'Посада'").run();
+  const demoImpact = [
+    [400, 'сесія арт-терапії для дитини'],
+    [1000, 'консультація з психотерапевтом'],
+    [3240, 'місяць курсів англійської мови'],
+    [18000, 'ноутбук для дистанційного навчання'],
+    [27000, 'путівка в табір психологічної реабілітації'],
+  ];
+  const delImpact = db.prepare('DELETE FROM impact_amounts WHERE amount = ? AND description = ?');
+  for (const [amount, description] of demoImpact) delImpact.run(amount, description);
+  db.prepare(`INSERT INTO settings (key, value) VALUES ('demo_cleanup_v1', '1')
+    ON CONFLICT(key) DO UPDATE SET value = excluded.value`).run();
 }
 
-if (countRow('fundraisers') === 0) {
-  const insert = db.prepare(`INSERT INTO fundraisers (title, platform, url, description, image_url, active, sort_order) VALUES (?,?,?,?,?,?,?)`);
-  insert.run(
-    'Назва збору (приклад)',
-    'siepomaga.pl / zrzutka.pl / pomagam.pl',
-    'https://',
-    'Короткий опис, на що саме йде цей збір. Замініть на реальне посилання та опис в адмінці → «Збори».',
-    '',
-    1,
-    1
+
+// ---------- Перші реальні матеріали (одноразово; далі все редагується в адмінці) ----------
+const materialsSeeded = db.prepare('SELECT value FROM settings WHERE key = ?').get('materials_seed_v1');
+if (!materialsSeeded) {
+  const insStory = db.prepare(`INSERT INTO stories (title, excerpt, body, image_url, gallery, published, sort_order) VALUES (?,?,?,?,?,?,?)`);
+
+  insStory.run(
+    'Таращанський навчально-реабілітаційний центр: допомога, яка триває',
+    'Регулярно привозимо продукти харчування, засоби гігієни та необхідні речі. Першим кроком фонд оплатив обробку дерев’яних конструкцій покрівлі, щоб зупинити руйнування даху.',
+    [
+      'Таращанський навчально-реабілітаційний центр — заклад, де навчаються й живуть діти з особливими освітніми потребами. Коли команда OM DAYA вперше побачила умови, в яких перебувають діти, стало зрозуміло: пройти повз не вийде.',
+      'З того часу фонд неодноразово привозив до центру продукти харчування, засоби гігієни та найнеобхідніші речі. Ми не хочемо бути фондом, який приїхав один раз і зник: справжня допомога не буває одноразовою, тому ми повертаємося — і діти знають, що про них пам’ятають.',
+      'Найгострішою проблемою виявився дах. Через аварійний стан дерев’яних конструкцій вода роками руйнувала приміщення, а після вибухової хвилі від ракетного удару неподалік стан покрівлі ще погіршився. Кожна негода означала нові протікання й вологі стіни.',
+      'Першим кроком OM DAYA оплатила роботи з обробки дерев’яних конструкцій покрівлі, щоб зупинити подальше руйнування даху. Платежі та фото «до» і «після» — у розділі «Звітність».',
+      'Це ще не фінал. Попереду ремонт укриття, покращення вентиляції, оновлення приміщень, закупівля обладнання та побутової техніки. Про кожен етап ми повідомлятимемо окремо.',
+    ].join('\n\n'),
+    '/assets/stories/tarashcha-building.jpg',
+    [
+      '/assets/stories/tarashcha-building.jpg | Таращанський навчально-реабілітаційний центр',
+      '/assets/stories/tarashcha-aid.jpg | Продукти та засоби гігієни, привезені до центру',
+      '/assets/stories/tarashcha-crafts.jpg | Творчі заняття в центрі',
+    ].join('\n'),
+    1, 1
   );
+
+  insStory.run(
+    'VI Європейський благодійний футбольний турнір «Херсонщина та Крим — це Україна»',
+    'Українці з різних куточків Європи об’єдналися заради дітей Білозерщини. Під час турніру зібрано 4 942 zł.',
+    [
+      'VI Європейський благодійний футбольний турнір «Херсонщина та Крим — це Україна» об’єднав українців з різних куточків Європи заради підтримки дітей Білозерщини.',
+      'Переможцем турніру стала команда «Фаворит». Її участь підтримала компанія «Фаворит Партнер». Але цього дня перемогла не лише одна команда: перемогли єдність, підтримка й благодійність.',
+      'Завдяки учасникам, гостям, волонтерам та партнерам вдалося зібрати 4 942 zł. Ці кошти будуть спрямовані на підтримку дітей Білозерщини та реалізацію важливих соціальних ініціатив.',
+      'Звіт про використання коштів ми опублікуємо в розділі «Звітність» після реалізації допомоги. Дякуємо кожному, хто був поруч.',
+    ].join('\n\n'),
+    '/assets/stories/tournament.jpg',
+    '/assets/stories/tournament.jpg | Учасники турніру',
+    1, 2
+  );
+
+  const insReport = db.prepare(`INSERT INTO reports (title, place, period, received, spent, result, note, status, gallery, published, sort_order) VALUES (?,?,?,?,?,?,?,?,?,?,?)`);
+
+  insReport.run(
+    'Обробка дерев’яних конструкцій покрівлі',
+    'Таращанський навчально-реабілітаційний центр',
+    '17–22 липня 2026',
+    '',
+    '4 473,32 zł — дві оплати за договором від 17 липня 2026: 2 237,71 zł (571,50 USD) від 17.07.2026 та 2 235,61 zł (569,48 USD) від 22.07.2026',
+    'Оплачено роботи з обробки дерев’яних конструкцій покрівлі, щоб зупинити подальше руйнування даху. Це перший етап: попереду ремонт укриття, покращення вентиляції, оновлення приміщень, закупівля обладнання та побутової техніки.',
+    'Банківські комісії за переказами: 40 zł і 120 zł. Підтвердження переказів зберігаються у фонді.',
+    'Перший етап',
+    [
+      '/assets/stories/roof-before-1.jpg | До початку робіт',
+      '/assets/stories/roof-before-2.jpg | До початку робіт',
+      '/assets/stories/roof-after-1.jpg | Після першого етапу',
+      '/assets/stories/roof-after-2.jpg | Після першого етапу',
+    ].join('\n'),
+    1, 1
+  );
+
+  insReport.run(
+    'VI Європейський благодійний футбольний турнір',
+    'Благодійний турнір «Херсонщина та Крим — це Україна»',
+    '',
+    '4 942 zł',
+    '',
+    'Кошти будуть спрямовані на підтримку дітей Білозерщини та реалізацію важливих соціальних ініціатив.',
+    'Звіт про використання коштів буде опубліковано після реалізації допомоги.',
+    'Очікується звіт',
+    '',
+    1, 2
+  );
+
+  db.prepare(`INSERT INTO settings (key, value) VALUES ('materials_seed_v1', '1')
+    ON CONFLICT(key) DO UPDATE SET value = excluded.value`).run();
+}
+
+
+// ---------- Матеріали, частина 2 (одноразово; не залежить від частини 1) ----------
+const materials2 = db.prepare('SELECT value FROM settings WHERE key = ?').get('materials_seed_v2');
+if (!materials2) {
+  const exists = db.prepare("SELECT id FROM stories WHERE title LIKE 'Підтримка дитячого спорту%'").get();
+  if (!exists) {
+    db.prepare(`INSERT INTO stories (title, excerpt, body, image_url, gallery, published, sort_order) VALUES (?,?,?,?,?,?,?)`).run(
+      'Підтримка дитячого спорту: подяка від київської «Школи Спорту»',
+      'КДЮСШ «Школа Спорту» у Києві відзначила OM DAYA подякою за внесок у розвиток греко-римської боротьби.',
+      [
+        'У складні часи дітям особливо важливо відчувати, що життя не зупинилося. Саме спорт допомагає повернути відчуття стабільності: тут є команда, тренер, підтримка й цілі, заради яких хочеться рухатися вперед.',
+        'Тому OM DAYA підтримує дитячі спортивні ініціативи. Одна з них — КДЮСШ «Школа Спорту» в Києві: до спортивної зали щодня приходять понад 50 дітей віком від 6 до 12 років. Школа відзначила благодійну організацію «OM DAYA» подякою «за вагомий особистий внесок у розвиток греко-римської боротьби».',
+        'Приміщення школи потребують ремонту, зокрема фасад і підсобні приміщення. Про допомогу з ремонтом ми розповімо окремо.',
+      ].join('\n\n'),
+      '/assets/stories/sports-plaque-cover.jpg',
+      '/assets/stories/sports-plaque.jpg | Подяка від КДЮСШ «Школа Спорту»',
+      1, 3
+    );
+  }
+  db.prepare(`INSERT INTO settings (key, value) VALUES ('materials_seed_v2', '1')
+    ON CONFLICT(key) DO UPDATE SET value = excluded.value`).run();
 }
 
 // ---------- helpers ----------

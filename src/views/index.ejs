@@ -24,11 +24,18 @@
           <a href="/programs" class="btn btn-primary">Як ми допомагаємо</a>
           <a href="/donate" class="btn btn-ghost">Підтримати OM DAYA</a>
         </div>
+        <% const stats = [
+          [settings.stat_families, 'підопічних родин'],
+          [settings.stat_donors, 'постійних благодійників'],
+          [settings.stat_years, 'років роботи'],
+        ].filter(([v]) => v && v.trim() && v.trim() !== '—'); %>
+        <% if (stats.length) { %>
         <div class="trust-row">
-          <div class="stat"><%= settings.stat_families %><small>підопічних родин</small></div>
-          <div class="stat"><%= settings.stat_donors %><small>постійних благодійників</small></div>
-          <div class="stat"><%= settings.stat_years %><small>років роботи</small></div>
+          <% stats.forEach(([v, label]) => { %>
+            <div class="stat"><%= v %><small><%= label %></small></div>
+          <% }) %>
         </div>
+        <% } %>
       </div>
       <div class="hero-visual">
         <img src="/assets/logo.png" alt="<%= settings.org_name %> — символ організації">
@@ -96,7 +103,8 @@
           <span class="eyebrow">Реальна справа OM DAYA</span>
           <h3><%= story.title %></h3>
           <p><%= story.excerpt %></p>
-          <a class="more" href="/stories" style="margin-top:16px; display:inline-block;">Усі справи →</a>
+          <a class="more" href="/stories/<%= story.id %>" style="margin-top:16px; display:inline-block;">Читати →</a>
+          <a class="more" href="/stories" style="margin:16px 0 0 18px; display:inline-block;">Усі справи →</a>
         </div>
       </div>
     </div>
@@ -112,6 +120,10 @@
         <form class="newsletter-form" action="/newsletter" method="POST">
           <input type="email" name="email" placeholder="Ваш email" required>
           <button class="btn btn-primary" type="submit">Доєднатися</button>
+          <label style="flex-basis:100%; font-size:12.5px; color:var(--ink-soft); text-align:left; display:flex; gap:8px; align-items:flex-start;">
+            <input type="checkbox" name="consent" required style="margin-top:3px;">
+            <span>Погоджуюсь на обробку персональних даних відповідно до <a href="/privacy" style="text-decoration:underline;">Політики приватності</a>.</span>
+          </label>
         </form>
       </div>
     </div>

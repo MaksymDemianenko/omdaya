@@ -21,9 +21,9 @@
       </div>
       <div class="footer-col">
         <h4>Контакти</h4>
-        <p><%= settings.contact_address %></p>
-        <p><%= settings.contact_email %></p>
-        <p><%= settings.contact_phone %></p>
+        <% if (filled(settings.contact_address)) { %><p><%= settings.contact_address %></p><% } %>
+        <% if (filled(settings.contact_email)) { %><p><a href="mailto:<%= settings.contact_email %>"><%= settings.contact_email %></a></p><% } %>
+        <% if (filled(settings.contact_phone)) { %><p><a href="tel:<%= settings.contact_phone.replace(/\s+/g, '') %>"><%= settings.contact_phone %></a></p><% } %>
         <a href="/stories">Реальні справи</a>
         <a href="/faq">Часті запитання</a>
       </div>

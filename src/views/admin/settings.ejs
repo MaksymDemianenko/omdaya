@@ -93,7 +93,8 @@
 
     <div class="admin-card">
       <div class="settings-section-title">Технічне</div>
-      <div class="form-row"><label>Адреса сайту (для посилань у соцмережах, напр. https://omdaya.care)</label><input type="text" name="site_url" value="<%= settings.site_url %>" placeholder="https://omdaya.care"></div>
+      <div class="form-row"><label>Адреса сайту (необов’язково — визначається автоматично; напр. https://omdaya.pl)</label><input type="text" name="site_url" value="<%= settings.site_url %>" placeholder="https://omdaya.pl"></div>
+      <div class="form-row"><label>Показувати позначку «чернетка — перевірити з юристом» на юридичних сторінках (1 — так, 0 — ні)</label><input type="text" name="legal_draft" value="<%= settings.legal_draft %>" placeholder="1"></div>
     </div>
 
     <button class="btn btn-primary" type="submit">Зберегти зміни</button>

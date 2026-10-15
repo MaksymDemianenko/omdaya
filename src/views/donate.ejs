@@ -39,15 +39,16 @@
     <div class="wrap">
       <div class="section-head center">
         <span class="eyebrow">Фінансова підтримка</span>
-        <h2>Офіційні збори фонду</h2>
-        <p style="margin-left:auto; margin-right:auto;">Фонд працює в Польщі, тож збори ведуться через офіційні платформи. На сторінці збору видно, скільки вже зібрано і на що йдуть кошти.</p>
+        <% if (fundraisers.length) { %>
+          <h2>Офіційні збори фонду</h2>
+          <p style="margin-left:auto; margin-right:auto;">Фонд працює в Польщі, тож збори ведуться через офіційні платформи. На сторінці збору видно, скільки вже зібрано і на що йдуть кошти.</p>
+        <% } else { %>
+          <h2>Прямий банківський переказ</h2>
+          <p style="margin-left:auto; margin-right:auto;">Ви можете підтримати фонд переказом на рахунок OM DAYA. Коли з’являться збори на офіційних платформах, посилання на них будуть тут.</p>
+        <% } %>
       </div>
-      <% if (fundraisers.length === 0) { %>
-        <div class="donate-card" style="text-align:center;">
-          <p style="color:var(--ink-soft);">Посилання на збори ще не додані.</p>
-          <p style="margin-top:8px;"><span class="placeholder-tag">додати в адмінці → «Збори»</span></p>
-        </div>
-      <% } else { %>
+
+      <% if (fundraisers.length) { %>
         <div class="fundraiser-grid">
           <% fundraisers.forEach(f => { %>
             <div class="fundraiser-card">
@@ -80,6 +81,7 @@
     </div>
   </section>
 
+  <% if (impact.length) { %>
   <section class="impact">
     <div class="wrap">
       <div class="section-head center">
@@ -91,7 +93,7 @@
           <div class="impact-card">
             <div class="swatch"></div>
             <div class="impact-body">
-              <div class="impact-amount"><%= Number(i.amount).toLocaleString('uk-UA') %> ₴</div>
+              <div class="impact-amount"><%= Number(i.amount).toLocaleString('uk-UA') %> €</div>
               <p><%= i.description %></p>
             </div>
           </div>
@@ -102,6 +104,13 @@
       </div>
     </div>
   </section>
+  <% } else { %>
+  <section>
+    <div class="wrap" style="text-align:center;">
+      <a href="/transparency" class="more">Як ми звітуємо про кошти — на сторінці «Звітність» →</a>
+    </div>
+  </section>
+  <% } %>
 </main>
 
 <%- include('partials/footer') %>
