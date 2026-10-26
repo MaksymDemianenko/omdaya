@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= title %></title>
+<link rel="stylesheet" href="/assets/admin.css">
+</head>
+<body>
+<%- include('partials/nav') %>
+<div class="admin-wrap">
+  <h1>Резервна копія бази</h1>
+  <p class="admin-sub">Усі тексти, історії, звіти, команда, заявки з форм і підписники лежать в одному файлі. Фото лежать окремо (в папці public/assets).</p>
+
+  <div class="admin-card">
+    <div class="settings-section-title">Завантажити копію</div>
+    <p style="font-size:14px; color:var(--a-ink-soft); margin-bottom:14px;">Рекомендовано: раз на місяць і перед будь-якими великими змінами. У файлі є email-адреси підписників і повідомлення з форм — зберігайте його приватно.</p>
+    <a class="btn btn-primary" href="/admin/backup">Завантажити резервну копію</a>
+  </div>
+
+  <div class="admin-card">
+    <div class="settings-section-title">Відновити з копії</div>
+    <p style="font-size:14px; color:var(--a-ink-soft); margin-bottom:14px;"><strong>Увага:</strong> поточні дані на сайті будуть замінені даними з файлу. Стара база збережеться на сервері як резерв. Після завантаження сайт сам перезапуститься (до хвилини).</p>
+    <input type="file" id="backupFile" accept=".sqlite,.db,application/octet-stream" style="margin-bottom:14px;">
+    <div><button class="btn btn-ghost" id="restoreBtn" type="button">Відновити</button></div>
+    <p id="restoreMsg" style="font-size:14px; margin-top:14px;"></p>
+  </div>
+</div>
+<script>
+  document.getElementById('restoreBtn').addEventListener('click', async () => {
+    const msg = document.getElementById('restoreMsg');
+    const file = document.getElementById('backupFile').files[0];
+    if (!file) { msg.textContent = 'Спочатку оберіть файл копії.'; return; }
+    if (!confirm('Замінити поточні дані сайту даними з файлу «' + file.name + '»?')) return;
+    msg.textContent = 'Завантажуємо…';
+    try {
+      const res = await fetch('/admin/restore', { method: 'POST', headers: { 'Content-Type': 'application/octet-stream' }, body: file });
+      const data = await res.json();
+      msg.textContent = res.ok ? 'Готово. Сайт перезапускається — оновіть сторінку через хвилину.' : (data.error || 'Помилка');
+    } catch (e) {
+      msg.textContent = 'Сайт перезапускається — оновіть сторінку через хвилину.';
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,7 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
-const { db, getSettings, setSetting } = require('../db');
+const fs = require('fs');
+const path = require('path');
+const { DatabaseSync } = require('node:sqlite');
+const { db, getSettings, setSetting, DB_PATH } = require('../db');
 const { requireAdmin } = require('../middleware/auth');
 
 // ---------- auth ----------
@@ -48,6 +51,41 @@ router.get('/', (req, res) => {
     newsletter: db.prepare('SELECT COUNT(*) c FROM newsletter').get().c,
   };
   res.render('admin/dashboard', { title: 'Адмінка', counts, layout: false });
+});
+
+// ---------- резервна копія та відновлення ----------
+router.get('/backup', (req, res) => {
+  db.exec('PRAGMA wal_checkpoint(TRUNCATE)');
+  const stamp = new Date().toISOString().slice(0, 10);
+  res.download(DB_PATH, `omdaya-backup-${stamp}.sqlite`);
+});
+
+router.get('/restore', (req, res) => {
+  res.render('admin/restore', { title: 'Відновлення з копії', layout: false });
+});
+
+router.post('/restore', express.raw({ type: 'application/octet-stream', limit: '30mb' }), (req, res) => {
+  const buf = req.body;
+  if (!Buffer.isBuffer(buf) || buf.length < 1024 || buf.subarray(0, 16).toString('latin1') !== 'SQLite format 3\0') {
+    return res.status(400).json({ error: 'Це не файл резервної копії (очікується .sqlite).' });
+  }
+  const tmp = DB_PATH + '.restore.tmp';
+  try {
+    fs.writeFileSync(tmp, buf);
+    const test = new DatabaseSync(tmp);
+    const tables = test.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map((t) => t.name);
+    test.close();
+    for (const need of ['settings', 'stories', 'team']) {
+      if (!tables.includes(need)) throw new Error('У файлі немає таблиці «' + need + '» — це не копія бази сайту.');
+    }
+    fs.renameSync(tmp, DB_PATH + '.restore');
+  } catch (e) {
+    try { fs.unlinkSync(tmp); } catch (_) { /* ignore */ }
+    return res.status(400).json({ error: 'Файл не підійшов: ' + e.message });
+  }
+  res.json({ ok: true });
+  // перезапуск: хостинг підніме сервіс знову, і база підміниться до старту
+  setTimeout(() => process.exit(0), 700);
 });
 
 // ---------- settings ----------
@@ -117,6 +155,7 @@ router.use('/stories', buildCrud({
     { name: 'body', label: 'Повний текст', type: 'textarea' },
     { name: 'image_url', label: 'Головне фото (шлях, напр. /assets/stories/photo.jpg)', type: 'text' },
     { name: 'gallery', label: 'Галерея: кожен рядок «шлях | підпис»', type: 'textarea' },
+    { name: 'videos', label: 'Відео: кожен рядок «посилання | підпис» (YouTube/Vimeo вбудуються, інші — кнопка)', type: 'textarea' },
     { name: 'published', label: 'Опубліковано (1/0)', type: 'text' },
     { name: 'sort_order', label: 'Порядок', type: 'text' },
   ],
@@ -172,6 +211,7 @@ router.use('/reports', buildCrud({
     { name: 'result', label: 'Результат — що вдалося зробити', type: 'textarea' },
     { name: 'note', label: 'Примітка (дрібним шрифтом)', type: 'textarea' },
     { name: 'gallery', label: 'Фото: кожен рядок «шлях | підпис»', type: 'textarea' },
+    { name: 'videos', label: 'Відео: кожен рядок «посилання | підпис»', type: 'textarea' },
     { name: 'published', label: 'Опубліковано (1/0)', type: 'text' },
     { name: 'sort_order', label: 'Порядок', type: 'text' },
   ],

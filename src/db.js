@@ -4,6 +4,21 @@ const { DatabaseSync } = require('node:sqlite'); // вбудований у Node
 const DB_PATH = process.env.DB_PATH
   ? path.resolve(__dirname, '..', process.env.DB_PATH)
   : path.join(__dirname, '..', 'data.sqlite');
+// Відновлення з резервної копії: адмінка кладе файл .restore поруч із базою і перезапускає сайт;
+// тут (до відкриття бази) файл підміняється. Стара база зберігається як .before-restore.
+const fs = require('fs');
+const RESTORE_PATH = DB_PATH + '.restore';
+if (fs.existsSync(RESTORE_PATH)) {
+  try {
+    if (fs.existsSync(DB_PATH)) fs.copyFileSync(DB_PATH, DB_PATH + '.before-restore');
+    for (const ext of ['-wal', '-shm']) if (fs.existsSync(DB_PATH + ext)) fs.unlinkSync(DB_PATH + ext);
+    fs.renameSync(RESTORE_PATH, DB_PATH);
+    console.log('Базу даних відновлено з резервної копії.');
+  } catch (e) {
+    console.error('Не вдалося відновити базу:', e.message);
+  }
+}
+
 const db = new DatabaseSync(DB_PATH);
 db.exec('PRAGMA journal_mode = WAL');
 
@@ -98,6 +113,9 @@ CREATE TABLE IF NOT EXISTS newsletter (
 // Міграція: колонка gallery для історій (фото-галерея: рядок = «URL | підпис»)
 const storyCols = db.prepare("PRAGMA table_info(stories)").all().map((c) => c.name);
 if (!storyCols.includes('gallery')) db.exec('ALTER TABLE stories ADD COLUMN gallery TEXT');
+if (!storyCols.includes('videos')) db.exec('ALTER TABLE stories ADD COLUMN videos TEXT');
+const reportCols = db.prepare("PRAGMA table_info(reports)").all().map((c) => c.name);
+if (!reportCols.includes('videos')) db.exec('ALTER TABLE reports ADD COLUMN videos TEXT');
 
 // ---------- default settings ----------
 // Ці поля — авторський текст сайту. Оновлюються автоматично при кожному деплої,
@@ -146,6 +164,7 @@ const operationalDefaults = {
   bank_requisites: 'IBAN: PL96 1940 1076 3297 1954 0000 0000\nBIC/SWIFT: AGRIPLPR\nНазва рахунку: OM DAYA\nТип рахунку: Konto SOLISTA Biznes\nОтримувач: Fundacja Om Daya',
   site_url: '',
   legal_draft: '1',
+  about_videos: '',
 };
 
 const upsertKeep = db.prepare(`INSERT INTO settings (key, value) VALUES (?, ?)
@@ -315,6 +334,24 @@ if (!materials2) {
     ON CONFLICT(key) DO UPDATE SET value = excluded.value`).run();
 }
 
+// ---------- Матеріали, частина 3: фото з дітьми в історії про Таращанський центр (одноразово) ----------
+const materials3 = db.prepare('SELECT value FROM settings WHERE key = ?').get('materials_seed_v3');
+if (!materials3) {
+  const st = db.prepare("SELECT id, gallery FROM stories WHERE title LIKE 'Таращанський навчально-реабілітаційний центр%'").get();
+  if (st && !String(st.gallery || '').includes('tarashcha-group.jpg')) {
+    const extra = [
+      '/assets/stories/tarashcha-group.jpg | Передача допомоги в центрі',
+      '/assets/stories/tarashcha-crafts-2.jpg | Творчі заняття',
+      '/assets/stories/tarashcha-collage.jpg | Творчі заняття та ігри просто неба',
+      '/assets/stories/tarashcha-children.jpg',
+    ].join('\n');
+    const next = (st.gallery ? String(st.gallery).trim() + '\n' : '') + extra;
+    db.prepare('UPDATE stories SET gallery = ? WHERE id = ?').run(next, st.id);
+  }
+  db.prepare(`INSERT INTO settings (key, value) VALUES ('materials_seed_v3', '1')
+    ON CONFLICT(key) DO UPDATE SET value = excluded.value`).run();
+}
+
 // ---------- helpers ----------
 function getSettings() {
   const rows = db.prepare('SELECT key, value FROM settings').all();
@@ -328,4 +365,4 @@ function setSetting(key, value) {
     ON CONFLICT(key) DO UPDATE SET value = excluded.value`).run(key, value);
 }
 
-module.exports = { db, getSettings, setSetting };
+module.exports = { db, getSettings, setSetting, DB_PATH };

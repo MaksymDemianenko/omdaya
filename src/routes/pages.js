@@ -9,6 +9,23 @@ const parseGallery = (text) => String(text || '').split('\n')
   .map((l) => l.trim()).filter(Boolean)
   .map((l) => { const [url, ...rest] = l.split('|'); return { url: url.trim(), caption: rest.join('|').trim() }; });
 
+// відео: кожен рядок «посилання | підпис». YouTube/Vimeo вбудовуються, решта — кнопка-посилання.
+const parseVideos = (text) => String(text || '').split('\n')
+  .map((l) => l.trim()).filter(Boolean)
+  .map((l) => {
+    const [url, ...rest] = l.split('|');
+    const u = url.trim();
+    const caption = rest.join('|').trim();
+    let embed = null; let m;
+    if ((m = u.match(/(?:youtube\.com\/(?:watch\?(?:[^\s]*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/))) {
+      embed = `https://www.youtube-nocookie.com/embed/${m[1]}`;
+    } else if ((m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/))) {
+      embed = `https://player.vimeo.com/video/${m[1]}`;
+    }
+    return { url: u, caption, embed };
+  })
+  .filter((v) => /^https?:\/\//i.test(v.url));
+
 const filled = (v) => Boolean(v && String(v).trim() && String(v).trim().toLowerCase() !== 'уточнюється');
 
 router.use((req, res, next) => {
@@ -17,6 +34,7 @@ router.use((req, res, next) => {
   res.locals.currentPath = req.path;
   res.locals.filled = filled;
   res.locals.parseGallery = parseGallery;
+  res.locals.parseVideos = parseVideos;
   // Базова адреса сайту: з налаштувань, або автоматично з поточного запиту
   const base = (settings.site_url || `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
   res.locals.baseUrl = base;

@@ -24,10 +24,9 @@ function getTransporter() {
 // Не блокує відповідь користувачу — якщо SMTP не налаштовано або лист не надіслався,
 // повідомлення все одно вже збережено в базі даних (messages / newsletter).
 async function sendMail({ subject, text }) {
-  const t = getTransporter();
-  if (!t) return { sent: false, reason: 'SMTP not configured' };
-
   try {
+    const t = getTransporter();
+    if (!t) return { sent: false, reason: 'SMTP not configured' };
     await t.sendMail({
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
       to: process.env.CONTACT_TO_EMAIL,

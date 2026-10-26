@@ -30,6 +30,8 @@
         </div>
       <% } %>
 
+      <%- include('partials/videos', { list: parseVideos(story.videos) }) %>
+
       <div style="margin-top:36px; display:flex; gap:14px; flex-wrap:wrap;">
         <a href="/transparency" class="btn btn-ghost">Звітність</a>
         <a href="/donate" class="btn btn-primary">Підтримати</a>

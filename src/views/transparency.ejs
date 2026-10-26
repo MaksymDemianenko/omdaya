@@ -11,7 +11,7 @@
   <section style="padding-top:0;">
     <div class="wrap">
       <p style="font-family:'Fraunces',serif; font-style:italic; font-size:19px; color:var(--magenta); max-width:70ch; margin-bottom:30px;">Для нас прозорість — це форма поваги до кожної людини, яка передає нам частину своєї довіри.</p>
-      <div class="values-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="values-grid cols-3">
         <div class="value-card"><h4>Документи фонду</h4><p>Реєстраційні та юридичні відомості доступні без запиту.</p></div>
         <div class="value-card"><h4>Звіти про проєкти</h4><p>Скільки отримано, на що витрачено і що стало можливим.</p></div>
         <div class="value-card"><h4>Чесні обмеження</h4><p>Ми не приховуємо того, що ще не вдалося або перебуває в розвитку.</p></div>
@@ -29,7 +29,7 @@
       <div class="donate-card" style="max-width:100%; margin-top:30px;">
         <h3 style="font-size:20px;"><%= settings.org_legal_name %></h3>
         <a href="https://wyszukiwarka-krs.ms.gov.pl/" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:18px;">Перевірити у KRS</a>
-        <div class="impact-grid" style="grid-template-columns:repeat(4,1fr); margin-top:28px;">
+        <div class="impact-grid cols-4" style="margin-top:28px;">
           <div>
             <div class="eyebrow">KRS</div>
             <p style="font-family:'Fraunces',serif; font-size:18px; margin-top:6px;"><%= settings.org_krs %></p>
@@ -86,6 +86,7 @@
                 <% }) %>
               </div>
             <% } %>
+            <%- include('partials/videos', { list: parseVideos(r.videos) }) %>
             <% if (r.note) { %><p class="report-note"><%= r.note %></p><% } %>
           </article>
         <% }) %>
@@ -103,7 +104,7 @@
         <span class="eyebrow">Як ми працюємо з внесками</span>
         <h2>Кожна сума має свій шлях і своє пояснення</h2>
       </div>
-      <div class="values-grid" style="grid-template-columns:repeat(2,1fr); margin-top:30px;">
+      <div class="values-grid cols-2" style="margin-top:30px;">
         <div class="value-card" style="background:rgba(255,255,255,0.06); box-shadow:none;">
           <p style="color:#fff;">Обліковуємо кожне надходження.</p>
         </div>

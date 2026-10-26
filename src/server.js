@@ -20,7 +20,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'change-me-in-env',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 1000 * 60 * 60 * 8 }, // 8 hours
+  cookie: { maxAge: 1000 * 60 * 60 * 8, httpOnly: true, sameSite: 'lax', secure: 'auto' }, // 8 годин
 }));
 
 app.use('/admin', adminRouter);

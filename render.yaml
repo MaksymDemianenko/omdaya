@@ -1,20 +1,22 @@
+# Blueprint для НОВОГО розгортання сайту (наприклад, в акаунті Render замовника).
+# Уже працюючий сервіс «omdaya» створено вручну — цей файл до нього підключати не потрібно.
+# Опис кроків — у документі про передачу проєкту.
 services:
   - type: web
-    name: omdaya-app
-    env: node
-    plan: free
+    name: omdaya
+    runtime: node
+    plan: starter          # диск (для збереження бази) потребує платного плану
+    region: frankfurt      # після створення змінити регіон не можна
     buildCommand: npm install
     startCommand: npm start
     envVars:
-      - key: PORT
-        value: 3000
       - key: ADMIN_PASSWORD_HASH
-        sync: false
+        sync: false          # Render запитає значення під час створення
       - key: SESSION_SECRET
-        generateValue: true
+        generateValue: true  # Render згенерує випадковий секрет
       - key: DB_PATH
-        value: /data/data.sqlite
+        value: /var/data/data.sqlite
     disk:
-      name: omdaya-data
-      mountPath: /data
+      name: data
+      mountPath: /var/data   # усе, що поза цією папкою, зникає при кожному деплої
       sizeGB: 1

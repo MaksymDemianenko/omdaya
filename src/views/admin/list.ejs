@@ -19,17 +19,18 @@
     <% if (rows.length === 0) { %>
       <p style="color:var(--a-ink-soft); font-size:14px;">Поки немає записів.</p>
     <% } else { %>
+    <div class="table-scroll">
     <table>
       <thead>
         <tr>
-          <% fields.forEach(f => { %><th><%= f.label %></th><% }) %>
+          <% fields.slice(0, 3).forEach(f => { %><th><%= f.label %></th><% }) %>
           <th></th>
         </tr>
       </thead>
       <tbody>
         <% rows.forEach(row => { %>
           <tr>
-            <% fields.forEach(f => { %>
+            <% fields.slice(0, 3).forEach(f => { %>
               <td><%= (row[f.name] || '').toString().slice(0, 80) %></td>
             <% }) %>
             <td class="actions">
@@ -42,6 +43,7 @@
         <% }) %>
       </tbody>
     </table>
+    </div>
     <% } %>
   </div>
 </div>

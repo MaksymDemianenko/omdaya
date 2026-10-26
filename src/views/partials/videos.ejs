@@ -1,0 +1,18 @@
+<% if (list && list.length) { %>
+<div class="video-list">
+  <% list.forEach(v => { %>
+    <figure class="video-fig">
+      <% if (v.embed) { %>
+        <div class="video-wrap">
+          <iframe src="<%= v.embed %>" title="<%= v.caption || 'Відео OM DAYA' %>" loading="lazy" allowfullscreen
+            referrerpolicy="strict-origin-when-cross-origin"
+            allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen"></iframe>
+        </div>
+      <% } else { %>
+        <a class="btn btn-ghost" href="<%= v.url %>" target="_blank" rel="noopener">▶ Дивитися відео</a>
+      <% } %>
+      <% if (v.caption) { %><figcaption><%= v.caption %></figcaption><% } %>
+    </figure>
+  <% }) %>
+</div>
+<% } %>

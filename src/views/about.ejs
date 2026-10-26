@@ -48,6 +48,18 @@
     </div>
   </section>
 
+  <% if (parseVideos(settings.about_videos).length) { %>
+  <section style="padding-top:0;">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Відео</span>
+        <h2>Про фонд — у відео</h2>
+      </div>
+      <%- include('partials/videos', { list: parseVideos(settings.about_videos) }) %>
+    </div>
+  </section>
+  <% } %>
+
   <% if (team.length) { %>
   <section class="pillars">
     <div class="wrap">

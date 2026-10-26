@@ -50,7 +50,7 @@
         <h2>Поруч на кожному етапі</h2>
         <p>OM DAYA підтримує українських дітей і родини в Україні та за її межами. Кожен напрям розвивається поступово, разом із фахівцями й перевіреними партнерами.</p>
       </div>
-      <div class="pillars-grid" style="grid-template-columns:repeat(auto-fit, minmax(240px,1fr));">
+      <div class="pillars-grid cols-auto">
         <% programs.forEach(p => { %>
           <div class="pillar-card">
             <div class="pillar-icon"><%= p.icon || '💛' %></div>
@@ -70,7 +70,7 @@
         <h2><%= settings.honesty_title %></h2>
         <p style="margin-left:auto; margin-right:auto; max-width:70ch;"><%= settings.honesty_text %></p>
       </div>
-      <div class="pillars-grid" style="grid-template-columns:repeat(2,1fr); margin-top:40px;">
+      <div class="pillars-grid cols-2" style="margin-top:40px;">
         <div class="pillar-card" style="background:rgba(255,255,255,0.06); box-shadow:none;">
           <h3 style="color:#fff;">Допомога, яку ми вже надаємо</h3>
           <p style="color:rgba(255,255,255,0.75);">Ми робимо перші практичні кроки у підтримці українських дітей: допомагаємо покращувати умови у закладах, долучаємося до вирішення питань здоров’я, даруємо дітям подарунки та моменти радості.</p>
