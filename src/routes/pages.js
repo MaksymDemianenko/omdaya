@@ -88,8 +88,10 @@ router.get('/get-help', (req, res) => {
 });
 
 router.get('/transparency', (req, res) => {
-  const reports = db.prepare('SELECT * FROM reports WHERE published = 1 ORDER BY sort_order').all();
-  res.render('transparency', { title: 'Звітність', pageDescription: descFor('/transparency'), reports });
+  const cases = db.prepare(`SELECT id, title, status, period, received, spent FROM stories
+    WHERE published = 1 AND (TRIM(COALESCE(received,'')) != '' OR TRIM(COALESCE(spent,'')) != '')
+    ORDER BY sort_order`).all();
+  res.render('transparency', { title: 'Звітність', pageDescription: descFor('/transparency'), cases });
 });
 
 router.get('/donate', (req, res) => {

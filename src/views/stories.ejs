@@ -5,7 +5,7 @@
   <%- include('partials/page-hero', {
     eyebrow: 'Реальні справи OM DAYA',
     pageTitle: 'Те, що вже стало можливим',
-    lead: 'Чесні кадри процесу й результату допомоги, з короткими підписами. Фото та історії публікуємо лише за згодою.'
+    lead: 'Що ми зробили, скільки це коштувало і що змінилося: тексти, фото та звіти за кожною справою. Фото й історії публікуємо лише за згодою.'
   }) %>
 
   <section style="padding-top:20px;">
@@ -27,6 +27,7 @@
             </div>
             <div class="story-mini-body">
               <span class="eyebrow">Реальна справа</span>
+              <% if (s.status) { %><span class="report-status" style="margin-left:8px; font-size:11px; padding:4px 10px;"><%= s.status %></span><% } %>
               <h3><%= s.title %></h3>
               <p><%= s.excerpt %></p>
               <span class="more" style="display:inline-block; margin-top:10px;">Читати →</span>

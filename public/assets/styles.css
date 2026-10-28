@@ -684,3 +684,11 @@ a, button{-webkit-tap-highlight-color:rgba(124,77,169,.15);}
   .program-media{aspect-ratio:16/8;}
   .program-detail h3{font-size:22px;}
 }
+
+/* посилання на справи у «Звітності» */
+.case-links{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr)); gap:18px;}
+.case-link{display:block; color:inherit; background:var(--surface); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow-sm); transition:transform .2s ease, box-shadow .2s ease;}
+.case-link:hover{transform:translateY(-3px); box-shadow:var(--shadow);}
+.case-link h3{font-size:19px; max-width:28ch;}
+.case-facts{margin:14px 0 12px; font-size:14.5px; color:var(--ink-soft); overflow-wrap:anywhere;}
+@media (max-width:640px){ .case-link{padding:20px 18px;} }

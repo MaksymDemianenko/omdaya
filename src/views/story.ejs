@@ -4,7 +4,7 @@
 <main>
   <section class="page-hero" style="padding-bottom:30px;">
     <div class="wrap">
-      <div class="breadcrumb"><a href="/">Головна</a> / <a href="/stories">Реальні справи</a> / Історія</div>
+      <div class="breadcrumb"><a href="/">Головна</a> / <a href="/stories">Реальні справи</a> / Справа</div>
       <span class="eyebrow">Реальна справа OM DAYA</span>
       <h1 style="margin-top:14px; font-size:clamp(26px,3.4vw,38px); max-width:24ch;"><%= story.title %></h1>
     </div>
@@ -17,6 +17,25 @@
           <p style="margin-bottom:18px;"><%= paragraph %></p>
         <% }) %>
       </div>
+
+      <% const hasReport = [story.period, story.received, story.spent, story.result].some(v => v && String(v).trim()); %>
+      <% if (hasReport) { %>
+        <article class="report-card" style="max-width:860px; margin-top:34px;">
+          <div class="report-head">
+            <div>
+              <span class="eyebrow">Звіт по справі</span>
+            </div>
+            <% if (story.status) { %><span class="report-status"><%= story.status %></span><% } %>
+          </div>
+          <div class="report-grid">
+            <% if (story.period) { %><div><div class="eyebrow">Період</div><p><%= story.period %></p></div><% } %>
+            <% if (story.received) { %><div><div class="eyebrow">Отримано</div><p><%= story.received %></p></div><% } %>
+            <% if (story.spent) { %><div><div class="eyebrow">Витрачено</div><p><%= story.spent %></p></div><% } %>
+            <% if (story.result) { %><div><div class="eyebrow">Результат</div><p><%= story.result %></p></div><% } %>
+          </div>
+          <% if (story.note) { %><p class="report-note"><%= story.note %></p><% } %>
+        </article>
+      <% } %>
 
       <% const photos = parseGallery(story.gallery); %>
       <% if (photos.length) { %>
@@ -33,7 +52,7 @@
       <%- include('partials/videos', { list: parseVideos(story.videos) }) %>
 
       <div style="margin-top:36px; display:flex; gap:14px; flex-wrap:wrap;">
-        <a href="/transparency" class="btn btn-ghost">Звітність</a>
+        <a href="/stories" class="btn btn-ghost">Усі справи</a>
         <a href="/donate" class="btn btn-primary">Підтримати</a>
       </div>
     </div>

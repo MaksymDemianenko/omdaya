@@ -114,6 +114,10 @@ CREATE TABLE IF NOT EXISTS newsletter (
 const storyCols = db.prepare("PRAGMA table_info(stories)").all().map((c) => c.name);
 if (!storyCols.includes('gallery')) db.exec('ALTER TABLE stories ADD COLUMN gallery TEXT');
 if (!storyCols.includes('videos')) db.exec('ALTER TABLE stories ADD COLUMN videos TEXT');
+// блок звіту всередині справи (необов’язковий)
+for (const col of ['period', 'received', 'spent', 'result', 'note', 'status']) {
+  if (!storyCols.includes(col)) db.exec(`ALTER TABLE stories ADD COLUMN ${col} TEXT`);
+}
 const reportCols = db.prepare("PRAGMA table_info(reports)").all().map((c) => c.name);
 if (!reportCols.includes('videos')) db.exec('ALTER TABLE reports ADD COLUMN videos TEXT');
 
@@ -349,6 +353,93 @@ if (!materials3) {
     db.prepare('UPDATE stories SET gallery = ? WHERE id = ?').run(next, st.id);
   }
   db.prepare(`INSERT INTO settings (key, value) VALUES ('materials_seed_v3', '1')
+    ON CONFLICT(key) DO UPDATE SET value = excluded.value`).run();
+}
+
+// ---------- Звіти → «Реальні справи» (одноразово) ----------
+// Усе, що було в розділі «Звітність», тепер живе у справах: у кожної справи є свій блок звіту.
+const casesMerged = db.prepare('SELECT value FROM settings WHERE key = ?').get('cases_merge_v1');
+if (!casesMerged) {
+  // 1) покрівля — окрема справа (разом із платежами та фото «до/після»)
+  const hasRoof = db.prepare("SELECT id FROM stories WHERE title LIKE 'Покрівля Таращанського%'").get();
+  if (!hasRoof) {
+    db.prepare(`INSERT INTO stories (title, excerpt, body, image_url, gallery, published, sort_order, period, received, spent, result, note, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(
+      'Покрівля Таращанського центру: перший етап',
+      'Фонд оплатив обробку дерев’яних конструкцій покрівлі, щоб зупинити подальше руйнування даху.',
+      [
+        'Через аварійний стан дерев’яних конструкцій дах Таращанського навчально-реабілітаційного центру роками руйнувався, а після вибухової хвилі від ракетного удару неподалік його стан ще погіршився. Кожна негода означала нові протікання й вологі стіни.',
+        'Першим кроком OM DAYA оплатила роботи з обробки дерев’яних конструкцій покрівлі, щоб зупинити подальше руйнування даху. Нижче — фото до початку робіт і після першого етапу.',
+        'Це лише перший етап. Попереду ремонт укриття, покращення вентиляції, оновлення приміщень, закупівля обладнання та побутової техніки. Про кожен наступний етап ми повідомлятимемо окремо.',
+      ].join('\n\n'),
+      '/assets/stories/roof-after-1.jpg',
+      [
+        '/assets/stories/roof-before-1.jpg | До початку робіт',
+        '/assets/stories/roof-before-2.jpg | До початку робіт',
+        '/assets/stories/roof-after-1.jpg | Після першого етапу',
+        '/assets/stories/roof-after-2.jpg | Після першого етапу',
+      ].join('\n'),
+      1, 2,
+      '17–22 липня 2026',
+      '',
+      '4 473,32 zł — дві оплати за договором від 17 липня 2026: 2 237,71 zł (571,50 USD) від 17.07.2026 та 2 235,61 zł (569,48 USD) від 22.07.2026',
+      'Оплачено роботи з обробки дерев’яних конструкцій покрівлі, щоб зупинити подальше руйнування даху. Це перший етап.',
+      'Банківські комісії за переказами: 40 zł і 120 zł. Підтвердження переказів зберігаються у фонді.',
+      'Перший етап'
+    );
+  }
+
+  // 2) турнір — блок звіту
+  const tour = db.prepare("SELECT id, received FROM stories WHERE title LIKE 'VI Європейський благодійний футбольний турнір%'").get();
+  if (tour && !String(tour.received || '').trim()) {
+    db.prepare('UPDATE stories SET received = ?, result = ?, note = ?, status = ? WHERE id = ?').run(
+      '4 942 zł',
+      'Кошти будуть спрямовані на підтримку дітей Білозерщини та реалізацію важливих соціальних ініціатив.',
+      'Звіт про використання коштів буде опубліковано після реалізації допомоги.',
+      'Очікується звіт',
+      tour.id
+    );
+  }
+
+  // 3) історія про центр: посилання на окрему справу замість «Звітності»
+  db.prepare(`UPDATE stories SET body = replace(body, 'Платежі та фото «до» і «після» — у розділі «Звітність».', 'Подробиці, платежі та фото «до» і «після» — в окремій справі про покрівлю.') WHERE title LIKE 'Таращанський навчально-реабілітаційний центр%'`).run();
+
+  // 3б) короткий опис історії про центр без дублювання справи про покрівлю
+  db.prepare(`UPDATE stories SET excerpt = replace(excerpt, ' Першим кроком фонд оплатив обробку дерев’яних конструкцій покрівлі, щоб зупинити руйнування даху.', ' Окремо фонд оплатив перший етап ремонту покрівлі.') WHERE title LIKE 'Таращанський навчально-реабілітаційний центр%'`).run();
+
+  // 4) порядок справ (лише якщо ніхто не міняв порядок руками)
+  const setOrder = db.prepare("UPDATE stories SET sort_order = ? WHERE title LIKE ? AND sort_order = ?");
+  setOrder.run(3, 'VI Європейський благодійний футбольний турнір%', 2);
+  setOrder.run(4, 'Підтримка дитячого спорту%', 3);
+
+  // 5) старі картки розділу «Звіти» ховаємо (щоб не дублювати)
+  db.prepare("UPDATE reports SET published = 0 WHERE title IN ('Обробка дерев’яних конструкцій покрівлі', 'VI Європейський благодійний футбольний турнір')").run();
+
+  db.prepare(`INSERT INTO settings (key, value) VALUES ('cases_merge_v1', '1')
+    ON CONFLICT(key) DO UPDATE SET value = excluded.value`).run();
+}
+
+// ---------- Додаткові фото в існуючі справи (одноразово) ----------
+const galleryMore = db.prepare('SELECT value FROM settings WHERE key = ?').get('gallery_more_v1');
+if (!galleryMore) {
+  const addPhotos = (titleLike, marker, lines) => {
+    const st = db.prepare('SELECT id, gallery FROM stories WHERE title LIKE ?').get(titleLike);
+    if (!st || String(st.gallery || '').includes(marker)) return;
+    const next = (st.gallery ? String(st.gallery).trim() + '\n' : '') + lines.join('\n');
+    db.prepare('UPDATE stories SET gallery = ? WHERE id = ?').run(next, st.id);
+  };
+  addPhotos('Таращанський навчально-реабілітаційний центр%', 'tarashcha-aid-2.jpg', [
+    '/assets/stories/tarashcha-aid-2.jpg | Передача продуктів дітям',
+    '/assets/stories/tarashcha-aid-3.jpg | Фрукти для дітей',
+    '/assets/stories/tarashcha-aid-4.jpg | Розвантаження допомоги',
+    '/assets/stories/tarashcha-aid-5.jpg | Передача необхідних речей',
+  ]);
+  addPhotos('VI Європейський благодійний футбольний турнір%', 'tournament-2.jpg', [
+    '/assets/stories/tournament-2.jpg | Переможці турніру — команда «Фаворит»',
+    '/assets/stories/tournament-3.jpg | Матч турніру',
+    '/assets/stories/tournament-4.jpg | Учасники турніру',
+    '/assets/stories/tournament-5.jpg | Під час турніру',
+  ]);
+  db.prepare(`INSERT INTO settings (key, value) VALUES ('gallery_more_v1', '1')
     ON CONFLICT(key) DO UPDATE SET value = excluded.value`).run();
 }
 

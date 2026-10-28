@@ -56,45 +56,32 @@
       <div class="section-head">
         <span class="eyebrow">Звіти про проєкти</span>
         <h2>Від потреби — до результату</h2>
-        <p>Для кожної допомоги — окремий зрозумілий звіт: скільки отримано, на що витрачено і що стало можливим.</p>
+        <p>Звіт за кожною допомогою — на сторінці відповідної справи в розділі «Реальні справи»: скільки отримано, на що витрачено, що змінилося, з фото.</p>
       </div>
 
-      <% if (reports.length) { %>
-        <% reports.forEach(r => { %>
-          <article class="report-card">
-            <div class="report-head">
-              <div>
-                <% if (r.place) { %><span class="eyebrow"><%= r.place %></span><% } %>
-                <h3><%= r.title %></h3>
+      <% if (cases.length) { %>
+        <div class="case-links">
+          <% cases.forEach(c => { %>
+            <a class="case-link" href="/stories/<%= c.id %>">
+              <div class="report-head">
+                <h3><%= c.title %></h3>
+                <% if (c.status) { %><span class="report-status"><%= c.status %></span><% } %>
               </div>
-              <% if (r.status) { %><span class="report-status"><%= r.status %></span><% } %>
-            </div>
-            <div class="report-grid">
-              <% if (r.period) { %><div><div class="eyebrow">Період</div><p><%= r.period %></p></div><% } %>
-              <% if (r.received) { %><div><div class="eyebrow">Отримано</div><p><%= r.received %></p></div><% } %>
-              <% if (r.spent) { %><div><div class="eyebrow">Витрачено</div><p><%= r.spent %></p></div><% } %>
-              <% if (r.result) { %><div><div class="eyebrow">Результат</div><p><%= r.result %></p></div><% } %>
-            </div>
-            <% const photos = parseGallery(r.gallery); %>
-            <% if (photos.length) { %>
-              <div class="photo-grid photo-grid-sm">
-                <% photos.forEach(ph => { %>
-                  <figure class="photo-fig">
-                    <img src="<%= ph.url %>" alt="<%= ph.caption || r.title %>" loading="lazy">
-                    <% if (ph.caption) { %><figcaption><%= ph.caption %></figcaption><% } %>
-                  </figure>
-                <% }) %>
-              </div>
-            <% } %>
-            <%- include('partials/videos', { list: parseVideos(r.videos) }) %>
-            <% if (r.note) { %><p class="report-note"><%= r.note %></p><% } %>
-          </article>
-        <% }) %>
+              <p class="case-facts">
+                <% if (c.received) { %>Отримано: <strong><%= String(c.received).split(' — ')[0].slice(0, 60) %></strong><% } %>
+                <% if (c.received && c.spent) { %> · <% } %>
+                <% if (c.spent) { %>Витрачено: <strong><%= String(c.spent).split(' — ')[0].slice(0, 60) %></strong><% } %>
+              </p>
+              <span class="more">Звіт і фото →</span>
+            </a>
+          <% }) %>
+        </div>
       <% } else { %>
         <div style="background:var(--lavender); border-radius:var(--radius); padding:22px;">
           <p style="color:var(--ink-soft);">OM DAYA лише починає свій шлях. Перші звіти з’являться після завершення та документального закриття відповідних проєктів.</p>
         </div>
       <% } %>
+      <p style="margin-top:22px;"><a class="more" href="/stories">Усі справи →</a></p>
     </div>
   </section>
 
